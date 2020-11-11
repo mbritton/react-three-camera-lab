@@ -9,16 +9,16 @@ Mike Britton 2020
 
 ## To Demo:
 
-Click Positions 1-5.
-Click back to Position 1.
-Click Left.
-Click Straight.
-Click Right.
-Click Straight again.
-Click Down.
-Click Straight.
-Click Up.
-Click Straight.
+1. Click Positions 1-5.
+2. Click back to Position 1.
+3. Click Left.
+4. Click Straight.
+5. Click Right.
+6. Click Straight again.
+7. Click Down.
+8. Click Straight.
+9. Click Up.
+10. Click Straight.
 
 ## Stack
 
