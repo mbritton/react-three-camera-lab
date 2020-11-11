@@ -86,9 +86,9 @@ function Menu() {
                 <a className="pg" onClick={ () =>  {
                     tiltCamera(0);
                     swivelCamera(0);
-                } }>Forward</a>
-                <a className="pg" onClick={ () => tiltCamera(1.5) }>Down</a>
-                <a className="pg" onClick={ () => swivelCamera(1.5) }>Right</a>
+                } }>Straight</a>
+                <a className="pg" onClick={ () => tiltCamera(1.6) }>Down</a>
+                <a className="pg" onClick={ () => swivelCamera(1.6) }>Right</a>
             </div>
 
             <div className="positionMenuWrapper">
@@ -127,14 +127,21 @@ function App() {
             <Canvas camera={ { position: [0, 0, - 3], rotation: [0, 0, 0] } }>
                 <ambientLight/>
                 <pointLight position={ [0, 2.588, - 3.764] }/>
+                {/* Default starts in center of scene */}
                 <ScreenBox position={ [0, 0, 0] }/>
                 <ScreenBox position={ [0, 0, - 5] }/>
                 <ScreenBox position={ [0, 0, - 10] }/>
                 <ScreenBox position={ [0, 0, - 15] }/>
                 <ScreenBox position={ [0, 0, - 20] }/>
-
+                {/* Top */}
                 <ScreenBox position={ [0, 2, 2] }/>
+                <ScreenBox position={ [0, 2, 5] }/>
+                {/* Bottom */}
+                <ScreenBox position={ [0, -2, 2] }/>
+                {/* Left */}
                 <ScreenBox position={ [2, 0, 2] }/>
+                {/* Right */}
+                <ScreenBox position={ [-2, 0, 2] }/>
                 <CameraDolly/>
                 <CameraTilt/>
                 <CameraSwivel/>
