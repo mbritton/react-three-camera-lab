@@ -1,7 +1,11 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 #Camera Movement Lab
-###Mike Britton 2020
+I'm playing with a 3D navigation system and experimenting with camera movements.
+
+This experiment uses Zustand for state management.
+
+Mike Britton 2020
+
 ##Stack
 
 - "react-spring": "^8.0.27",
