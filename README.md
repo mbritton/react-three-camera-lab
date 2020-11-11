@@ -1,12 +1,13 @@
 
-#Camera Movement Lab
+# Camera Movement Lab
+
 I'm playing with a 3D navigation system and experimenting with camera movements.
 
 This experiment uses Zustand for state management.
 
 Mike Britton 2020
 
-##Stack
+## Stack
 
 - "react-spring": "^8.0.27",
 - "react-three-fiber": "^5.1.4",
