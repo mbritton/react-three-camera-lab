@@ -20,6 +20,11 @@ Mike Britton 2020
 9. Click Up.
 10. Click Straight.
 
+## General
+
+Use this editor to load the scene JSON files:
+https://threejs.org/editor/
+
 ## Stack
 
 - "react-spring": "^8.0.27",
