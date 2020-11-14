@@ -12,11 +12,11 @@ const useStore = create((set, get) => ({
     currentSwivel: 0,
     currentVector: 'z',
     currentCamera: null,
-    onFrameFunction: ({ z }) => {
-        // console.log('get().currentCamera', get().currentCamera);
-        // console.log('get().currentVector', get().currentVector);
-        // console.log('get().currentDollyPosition.amount', get().currentDollyPosition.amount);
+    currentDollyPositionX: 0,
+    onFrameFunction: ({z}) => {
         get().currentCamera.position[get().currentVector] = z;
+        console.log('Camera Position: ', get().currentCamera.position[get().currentVector]);
+        console.log('Camera Direction: ', get().currentVector);
     }
 }));
 
@@ -25,69 +25,16 @@ let myTexture = null;
 function CameraDolly() {
     const { gl, ref, scene, camera, size } = useThree();
 
-    // Needs vector...default is z.
-    // Vector will be the dimensional plane until it becomes object-to-object.
-    // Get dynamic config via some accessor function?
-
     const cv = useStore(state => state.currentVector);
     const cda = useStore(state => state.currentDollyPosition.amount);
+
     useStore.setState({currentCamera: camera});
 
-    // let wholeObj = {};
-    let fromObj = {};
+    let fromObj = {}, toObj = {};
     fromObj[cv !== undefined ? cv : 'z'] = 0;
-    let toObj = {};
     toObj[cv !== undefined ? cv : 'z'] = cda;
-    // wholeObj['from'] = fromObj;
-    // wholeObj[cv ? cv : 'z'] = useStore(state => state.currentDollyPosition.amount);
-    //wholeObj['fooFrame'] = JSON.parse('({ '+ cv ? cv : 'z' + ' }) => camera["position"][' + cv ? cv : 'z' + '] = ' + cda);
-    //     camera.position['z'] = cda;
-    // }
 
-    // Find new way to build spring call dynamically, or use Three differently for this...
-
-    // O = {};
-    // newO['from'] = wholeObj['from'];
-    // newOlet new[wholeObj[cv ? cv : 'z']] = useStore(state => state.currentDollyPosition.amount);
-    //newO['onFrame'] = wholeObj['fooFrame'];
-    // useSpring(newO);
-
-    console.log('fromObj', fromObj);
-    console.log('toObj', toObj);
-
-    useSpring({
-        from: fromObj,
-        to: toObj,
-        onFrame: useStore(state => state.onFrameFunction)
-    })
-
-    // useSpring({
-    //     from: { z: 0 },
-    //     z: useStore(state => state.currentDollyPosition.amount),
-    //     onFrame: ({z}) => {
-    //         camera.position.z = z;
-    //     }
-    // })
-
-    // useSpring({
-    //     from: { z: 0 },
-    //     z: useStore(state => state.currentDollyPosition.amount),
-    //     onFrame: ({z}) => {
-    //         camera.position.z = z;
-    //     }
-    // })
-
-    // useFrame(() => {
-        // console.log('camera.position', camera.position);
-        // console.log('cda', cda);
-        // camera.position.z = -cda;
-        // camera.updateMatrix();
-        // scene.updateMatrix();
-        // gl.autoClear = true;
-        // gl.render(scene, camera);
-        // gl.autoClear = false;
-        // gl.clearDepth();
-    // })
+    useSpring({  from: fromObj, to: toObj, onFrame: useStore.getState().onFrameFunction })
 
     return null;
 }
@@ -148,14 +95,16 @@ function Menu() {
             <div className="rotateMenuWrapper">
                 <a className="pg" onClick={ () => {
                     setVector('x');
-                    swivelCamera(- 1.6);
+                    swivelCamera(-1.6);
                 } }>Left</a>
                 <a className="pg" onClick={ () => tiltCamera(-1.6) }>Up</a>
                 <a className="pg" onClick={ () =>  {
+                    setVector('z');
                     tiltCamera(0);
                     swivelCamera(0);
                 } }>Ahead</a>
                 <a className="pg" onClick={ () =>  {
+                    setVector('z');
                     tiltCamera(0);
                     swivelCamera(-3.2);
                 } }>Behind</a>
@@ -198,15 +147,15 @@ function App() {
     useStore.setState({currentCamera: camera});
     return (
         <div className="App">
-            <Canvas camera={ { position: [0, 0, -3], rotation: [0, 0, 0] } }>
+            <Canvas camera={ { position: [0, 0, 0], rotation: [0, 0, 0] } }>
                 <ambientLight/>
                 <pointLight position={ [0, 11.713, -2.39] }/>
                 {/* Default starts in center of scene. Objects spaced in increments of 5. */}
                 <ScreenBox position={ [0, 0, 0] }/>
-                <ScreenBox position={ [0, 0, - 5] }/>
-                <ScreenBox position={ [0, 0, - 10] }/>
-                <ScreenBox position={ [0, 0, - 15] }/>
-                <ScreenBox position={ [0, 0, - 20] }/>
+                <ScreenBox position={ [0, 0, -5] }/>
+                <ScreenBox position={ [0, 0, -10] }/>
+                <ScreenBox position={ [0, 0, -15] }/>
+                <ScreenBox position={ [0, 0, -20] }/>
                 {/* Top */}
                 <ScreenBox position={ [0, 2, 2] }/>
                 <ScreenBox position={ [0, 7, 2] }/>
