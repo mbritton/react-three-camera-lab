@@ -23,7 +23,7 @@ const useStore = create((set, get) => ({
 let myTexture = null;
 
 function CameraDolly() {
-    const { gl, ref, scene, camera, size } = useThree();
+    const { gl, scene, camera, size } = useThree();
 
     const cv = useStore(state => state.currentVector);
     const cda = useStore(state => state.currentDollyPosition.amount);
@@ -94,10 +94,11 @@ function Menu() {
         <div className="menu">
             <div className="rotateMenuWrapper">
                 <a className="pg" onClick={ () => {
-                    setVector('x');
-                    swivelCamera(-1.6);
+                    // Maybe trigger a sequence instead?
+                    // setVector('x');
+                    swivelCamera(1.6);
                 } }>Left</a>
-                <a className="pg" onClick={ () => tiltCamera(-1.6) }>Up</a>
+                <a className="pg" onClick={ () => tiltCamera(1.6) }>Up</a>
                 <a className="pg" onClick={ () =>  {
                     setVector('z');
                     tiltCamera(0);
@@ -108,8 +109,8 @@ function Menu() {
                     tiltCamera(0);
                     swivelCamera(-3.2);
                 } }>Behind</a>
-                <a className="pg" onClick={ () => tiltCamera(1.6) }>Down</a>
-                <a className="pg" onClick={ () => swivelCamera(1.6) }>Right</a>
+                <a className="pg" onClick={ () => tiltCamera(-1.6) }>Down</a>
+                <a className="pg" onClick={ () => swivelCamera(-1.6) }>Right</a>
             </div>
 
             <div className="positionMenuWrapper">
