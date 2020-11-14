@@ -27,7 +27,7 @@ https://threejs.org/editor/
 
 ## Stack
 
-- "react-spring": "^8.0.27",
-- "react-three-fiber": "^5.1.4",
+- react-spring https://www.react-spring.io/docs
+- react-three-fiber 
 - Three.js: "^0.122.0",
 - "zustand": "^3.1.3"

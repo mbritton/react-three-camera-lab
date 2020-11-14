@@ -6,11 +6,18 @@ import create from 'zustand';
 import { TextureLoader } from 'three';
 import myImage from './logo512.png';
 
-const useStore = create(set => ({
+const useStore = create((set, get) => ({
     currentDollyPosition: {amount: 2, vector: 'z'},
     currentTilt: 0,
     currentSwivel: 0,
-    currentVector: 'z'
+    currentVector: 'z',
+    currentCamera: null,
+    onFrameFunction: ({ z }) => {
+        // console.log('get().currentCamera', get().currentCamera);
+        // console.log('get().currentVector', get().currentVector);
+        // console.log('get().currentDollyPosition.amount', get().currentDollyPosition.amount);
+        get().currentCamera.position[get().currentVector] = z;
+    }
 }));
 
 let myTexture = null;
@@ -24,10 +31,13 @@ function CameraDolly() {
 
     const cv = useStore(state => state.currentVector);
     const cda = useStore(state => state.currentDollyPosition.amount);
+    useStore.setState({currentCamera: camera});
 
     // let wholeObj = {};
-    // let fromObj = {};
-    // fromObj[cv ? cv : 'z'] = 0;
+    let fromObj = {};
+    fromObj[cv !== undefined ? cv : 'z'] = 0;
+    let toObj = {};
+    toObj[cv !== undefined ? cv : 'z'] = cda;
     // wholeObj['from'] = fromObj;
     // wholeObj[cv ? cv : 'z'] = useStore(state => state.currentDollyPosition.amount);
     //wholeObj['fooFrame'] = JSON.parse('({ '+ cv ? cv : 'z' + ' }) => camera["position"][' + cv ? cv : 'z' + '] = ' + cda);
@@ -42,13 +52,22 @@ function CameraDolly() {
     //newO['onFrame'] = wholeObj['fooFrame'];
     // useSpring(newO);
 
+    console.log('fromObj', fromObj);
+    console.log('toObj', toObj);
+
     useSpring({
-        from: { z: 0 },
-        z: useStore(state => state.currentDollyPosition.amount),
-        onFrame: ({z}) => {
-            camera.position.z = z;
-        }
+        from: fromObj,
+        to: toObj,
+        onFrame: useStore(state => state.onFrameFunction)
     })
+
+    // useSpring({
+    //     from: { z: 0 },
+    //     z: useStore(state => state.currentDollyPosition.amount),
+    //     onFrame: ({z}) => {
+    //         camera.position.z = z;
+    //     }
+    // })
 
     // useSpring({
     //     from: { z: 0 },
@@ -96,7 +115,9 @@ function CameraSwivel() {
         from: {
             y: 0
         },
-        y: useStore(state => state.currentSwivel),
+        to: {
+            y: useStore(state => state.currentSwivel)
+        },
         onFrame: ({ y }) => {
             camera.rotation.y = y;
         }
@@ -173,9 +194,11 @@ function ScreenBox(props) {
 }
 
 function App() {
+    const { camera } = useThree();
+    useStore.setState({currentCamera: camera});
     return (
         <div className="App">
-            <Canvas camera={ { position: [0, 0, - 3], rotation: [0, 0, 0] } }>
+            <Canvas camera={ { position: [0, 0, -3], rotation: [0, 0, 0] } }>
                 <ambientLight/>
                 <pointLight position={ [0, 11.713, -2.39] }/>
                 {/* Default starts in center of scene. Objects spaced in increments of 5. */}
