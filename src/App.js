@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Canvas, useThree, useFrame } from 'react-three-fiber';
-import { useSpring } from 'react-spring';
+import { useSpring, UseSpringProps } from 'react-spring';
 import './App.css';
 import create from 'zustand';
 import { TextureLoader } from 'three';
@@ -10,70 +10,115 @@ const useStore = create((set, get) => ({
     currentDollyPosition: {amount: 2, vector: 'z'},
     currentTilt: 0,
     currentSwivel: 0,
-    currentVector: 'z',
+    currentPositionVector: 'z',
+    currentTiltVector: 'x',
+    currentSwivelVector: 'y',
     currentCamera: null,
     currentDollyPositionX: 0,
-    onFrameFunction: ({z}) => {
-        get().currentCamera.position[get().currentVector] = z;
-        console.log('Camera Position: ', get().currentCamera.position[get().currentVector]);
-        console.log('Camera Direction: ', get().currentVector);
+    onFramePosition: ({x,y,z}) => {
+        console.log('x', x);
+        console.log('y', y);
+        console.log('z', z);
+        
+        let curDim = 0;
+        if (x) {
+            curDim = x;
+        } else if (y) {
+            curDim = y;
+        } else if (z) {
+            curDim = z;
+        }
+        
+        get().currentCamera.position[get().currentPositionVector] = curDim;
+    },
+    onFrameTilt: ({x,y,z}) => {
+        console.log('Tilt x', x);
+        console.log('Tilt y', y);
+        console.log('Tilt z', z);
+        
+        let curDim = 0;
+        if (x) {
+            curDim = x;
+        } else if (y) {
+            curDim = y;
+        } else if (z) {
+            curDim = z;
+        }
+        
+        get().currentCamera.rotation[get().currentTiltVector] = curDim;
+    },
+    onFrameSwivel: ({x,y,z}) => {
+        console.log('Swivel x', x);
+        console.log('Swivel y', y);
+        console.log('Swivel z', z);
+        
+        let curDim = 0;
+        if (x) {
+            curDim = x;
+        } else if (y) {
+            curDim = y;
+        } else if (z) {
+            curDim = z;
+        }
+        
+        get().currentCamera.rotation[get().currentSwivelVector] = curDim;
     }
 }));
 
 let myTexture = null;
 
 function CameraDolly() {
-    const { gl, scene, camera, size } = useThree();
-
-    const cv = useStore(state => state.currentVector);
+    const { camera } = useThree();
+    const cv = useStore(state => state.currentPositionVector);
     const cda = useStore(state => state.currentDollyPosition.amount);
 
     useStore.setState({currentCamera: camera});
 
     let fromObj = {}, toObj = {};
-    fromObj[cv !== undefined ? cv : 'z'] = 0;
-    toObj[cv !== undefined ? cv : 'z'] = cda;
+        fromObj[cv] = 0;
+        toObj[cv] = cda;
 
-    useSpring({  from: fromObj, to: toObj, onFrame: useStore.getState().onFrameFunction })
+    useSpring({ from: fromObj, to: toObj, onFrame: useStore.getState().onFramePosition });
 
     return null;
 }
 
 function CameraTilt() {
-    const { camera } = useThree();
+    const cv = useStore(state => state.currentTiltVector);
+    const cda = useStore(state => state.currentTilt);
+
+    let fromObj = {}, toObj = {};
+    fromObj[cv] = 0;
+    toObj[cv] = cda;
 
     useSpring({
-        from: {
-            x: 0
-        },
-        x: useStore(state => state.currentTilt),
-        onFrame: ({ x }) => {
-            camera.rotation.x = x;
-        }
+        from: fromObj,
+        to: toObj,
+        onFrame: useStore.getState().onFrameTilt
     })
 
     return null;
 }
 
 function CameraSwivel() {
-    const { camera } = useThree();
+    const cv = useStore(state => state.currentSwivelVector);
+    const cda = useStore(state => state.currentSwivel);
+
+    let fromObj = {}, toObj = {};
+    fromObj[cv] = 0;
+    toObj[cv] = cda;
 
     useSpring({
-        from: {
-            y: 0
-        },
-        to: {
-            y: useStore(state => state.currentSwivel)
-        },
-        onFrame: ({ y }) => {
-            camera.rotation.y = y;
-        }
+        from: fromObj,
+        to: toObj,
+        onFrame: useStore.getState().onFrameSwivel
     })
 
     return null;
 }
 
 function Menu() {
+
     function dollyCamera(pNo) {
         useStore.setState({ currentDollyPosition: { amount: pNo } });
     }
@@ -87,25 +132,21 @@ function Menu() {
     }
 
     function setVector(vD) {
-        useStore.setState({ currentVector: vD });
+        useStore.setState({ currentPositionVector: vD });
     }
 
     return (
         <div className="menu">
             <div className="rotateMenuWrapper">
                 <a className="pg" onClick={ () => {
-                    // Maybe trigger a sequence instead?
-                    // setVector('x');
                     swivelCamera(1.6);
                 } }>Left</a>
                 <a className="pg" onClick={ () => tiltCamera(1.6) }>Up</a>
                 <a className="pg" onClick={ () =>  {
-                    setVector('z');
                     tiltCamera(0);
                     swivelCamera(0);
                 } }>Ahead</a>
                 <a className="pg" onClick={ () =>  {
-                    setVector('z');
                     tiltCamera(0);
                     swivelCamera(-3.2);
                 } }>Behind</a>
@@ -170,11 +211,11 @@ function App() {
                 <ScreenBox position={ [0, -17, 2] }/>
                 <ScreenBox position={ [0, -22, 2] }/>
                 {/* Left */}
-                <ScreenBox position={ [2, 0, 2] }/>
-                <ScreenBox position={ [7, 0, 2] }/>
-                <ScreenBox position={ [12, 0, 2] }/>
-                <ScreenBox position={ [17, 0, 2] }/>
-                <ScreenBox position={ [22, 0, 2] }/>
+                <ScreenBox position={ [-2, 0, 2] }/>
+                <ScreenBox position={ [-7, 0, 2] }/>
+                <ScreenBox position={ [-12, 0, 2] }/>
+                <ScreenBox position={ [-17, 0, 2] }/>
+                <ScreenBox position={ [-22, 0, 2] }/>
                 {/* Right */}
                 <ScreenBox position={ [-2, 0, 2] }/>
                 <ScreenBox position={ [-7, 0, 2] }/>
