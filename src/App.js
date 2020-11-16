@@ -1,123 +1,186 @@
 import React, { useRef, useState } from 'react';
 import { Canvas, useThree, useFrame } from 'react-three-fiber';
-import { useSpring } from 'react-spring';
+import { useSpring, UseSpringProps } from 'react-spring';
 import './App.css';
 import create from 'zustand';
 import { TextureLoader } from 'three';
 import myImage from './logo512.png';
 
 const useStore = create((set, get) => ({
-    currentDollyPosition: {amount: 2, vector: 'z'},
+    currentDollyPosition: 0,
     currentTilt: 0,
     currentSwivel: 0,
-    currentVector: 'z',
+    currentPositionVector: 'z',
+    currentTiltVector: 'x',
+    currentSwivelVector: 'y',
     currentCamera: null,
-    currentDollyPositionX: 0,
-    onFrameFunction: ({z}) => {
-        get().currentCamera.position[get().currentVector] = z;
-        console.log('Camera Position: ', get().currentCamera.position[get().currentVector]);
-        console.log('Camera Direction: ', get().currentVector);
+    currentDirection: 'f',
+    onFramePosition: ({x,y,z}) => {
+        let curDim = 0;
+        if (x) {
+            curDim = x;
+        } else if (y) {
+            curDim = y;
+        } else if (z) {
+            curDim = z;
+        }
+        
+        get().currentCamera.position[get().currentPositionVector] = curDim;
+    },
+    onFrameTilt: ({x,y,z}) => {
+        let curDim = 0;
+        if (x) {
+            curDim = x;
+        } else if (y) {
+            curDim = y;
+        } else if (z) {
+            curDim = z;
+        }
+        
+        get().currentCamera.rotation[get().currentTiltVector] = curDim;
+    },
+    onFrameSwivel: ({x,y,z}) => {
+        let curDim = 0;
+        if (x) {
+            curDim = x;
+        } else if (y) {
+            curDim = y;
+        } else if (z) {
+            curDim = z;
+        }
+        
+        get().currentCamera.rotation[get().currentSwivelVector] = curDim;
     }
 }));
 
 let myTexture = null;
 
 function CameraDolly() {
-    const { gl, ref, scene, camera, size } = useThree();
-
-    const cv = useStore(state => state.currentVector);
-    const cda = useStore(state => state.currentDollyPosition.amount);
+    const { camera } = useThree();
+    const cv = useStore(state => state.currentPositionVector);
 
     useStore.setState({currentCamera: camera});
 
     let fromObj = {}, toObj = {};
-    fromObj[cv !== undefined ? cv : 'z'] = 0;
-    toObj[cv !== undefined ? cv : 'z'] = cda;
+        fromObj[cv] = 0;
+        toObj[cv] = useStore(state => state.currentDollyPosition);
 
-    useSpring({  from: fromObj, to: toObj, onFrame: useStore.getState().onFrameFunction })
+    useSpring({ from: fromObj, to: toObj, onFrame: useStore.getState().onFramePosition });
 
     return null;
 }
 
 function CameraTilt() {
-    const { camera } = useThree();
+    const cv = useStore(state => state.currentTiltVector);
+    const cda = useStore(state => state.currentTilt);
+
+    let fromObj = {}, toObj = {};
+    fromObj[cv] = 0;
+    toObj[cv] = cda;
 
     useSpring({
-        from: {
-            x: 0
-        },
-        x: useStore(state => state.currentTilt),
-        onFrame: ({ x }) => {
-            camera.rotation.x = x;
-        }
+        from: fromObj,
+        to: toObj,
+        onFrame: useStore.getState().onFrameTilt
     })
 
     return null;
 }
 
 function CameraSwivel() {
-    const { camera } = useThree();
+    const cv = useStore(state => state.currentSwivelVector);
+
+    let fromObj = {}, toObj = {};
+    fromObj[cv] = 0;
+    toObj[cv] = useStore(state => state.currentSwivel);
 
     useSpring({
-        from: {
-            y: 0
-        },
-        to: {
-            y: useStore(state => state.currentSwivel)
-        },
-        onFrame: ({ y }) => {
-            camera.rotation.y = y;
-        }
+        from: fromObj,
+        to: toObj,
+        onFrame: useStore.getState().onFrameSwivel
     })
 
     return null;
 }
 
 function Menu() {
+
     function dollyCamera(pNo) {
-        useStore.setState({ currentDollyPosition: { amount: pNo } });
+        const isRight = useStore.getState().currentDirection === 'r';
+        const isBehind = useStore.getState().currentDirection === 'b';
+        const isAbove = useStore.getState().currentDirection === 'a';
+        const isUnder = useStore.getState().currentDirection === 'u';
+        useStore.setState({ currentDollyPosition: (isRight || isBehind || isAbove)  ? pNo : -pNo });
     }
 
     function tiltCamera(rNo) {
+        console.log('rNo', rNo);
+
         useStore.setState({ currentTilt: rNo });
+        useStore.setState({ currentDirection : (rNo > 0) ? 'a' : 'u' })
+
+        useStore.setState({ currentSwivelVector : 'x' });
+        useStore.setState({ currentPositionVector : 'y' });
+        useStore.setState({ currentTiltVector : 'x' });
     }
 
     function swivelCamera(sNo) {
+        if (sNo === 0) {
+            useStore.setState({ currentDirection : 'f' });
+            useStore.setState({ currentSwivelVector : 'y' });
+            useStore.setState({ currentPositionVector : 'z' });
+            useStore.setState({ currentTiltVector : 'x' });
+        } else {
+            // It's going clockwise
+            if (sNo < 0) {
+                // It's behind
+                if (sNo == -3.2) {
+                    useStore.setState({ currentDirection: 'b' });
+                    useStore.setState({ currentSwivelVector : 'y' });
+                    useStore.setState({ currentPositionVector : 'z' });
+                    useStore.setState({ currentTiltVector : 'x' });
+                // Else it's right
+                } else {
+                    useStore.setState({ currentDirection: 'r' });
+                    useStore.setState({ currentSwivelVector : 'y' });
+                    useStore.setState({ currentPositionVector : 'x' });
+                    useStore.setState({ currentTiltVector : 'z' });
+                }
+            // Else it's left
+            } else {
+                useStore.setState({ currentDirection : 'l' });
+                useStore.setState({ currentSwivelVector : 'y' });
+                useStore.setState({ currentPositionVector : 'x' });
+                useStore.setState({ currentTiltVector : 'z' });
+            }
+        }
         useStore.setState({ currentSwivel: sNo });
-    }
-
-    function setVector(vD) {
-        useStore.setState({ currentVector: vD });
     }
 
     return (
         <div className="menu">
             <div className="rotateMenuWrapper">
                 <a className="pg" onClick={ () => {
-                    setVector('x');
-                    swivelCamera(-1.6);
+                    swivelCamera(1.6);
                 } }>Left</a>
-                <a className="pg" onClick={ () => tiltCamera(-1.6) }>Up</a>
+                <a className="pg" onClick={ () => tiltCamera(1.6) }>Up</a>
                 <a className="pg" onClick={ () =>  {
-                    setVector('z');
                     tiltCamera(0);
                     swivelCamera(0);
                 } }>Ahead</a>
                 <a className="pg" onClick={ () =>  {
-                    setVector('z');
                     tiltCamera(0);
                     swivelCamera(-3.2);
                 } }>Behind</a>
-                <a className="pg" onClick={ () => tiltCamera(1.6) }>Down</a>
-                <a className="pg" onClick={ () => swivelCamera(1.6) }>Right</a>
+                <a className="pg" onClick={ () => tiltCamera(-1.6) }>Down</a>
+                <a className="pg" onClick={ () => swivelCamera(-1.6) }>Right</a>
             </div>
-
             <div className="positionMenuWrapper">
-                <a className="pg" onClick={ () => dollyCamera(2) }>Position 1</a>
-                <a className="pg" onClick={ () => dollyCamera(-3) }>Position 2</a>
-                <a className="pg" onClick={ () => dollyCamera(-8) }>Position 3</a>
-                <a className="pg" onClick={ () => dollyCamera(-13) }>Position 4</a>
-                <a className="pg" onClick={ () => dollyCamera(-18) }>Position 5</a>
+                <a className="pg" onClick={ () => dollyCamera(0) }>Position 1</a>
+                <a className="pg" onClick={ () => dollyCamera(5) }>Position 2</a>
+                <a className="pg" onClick={ () => dollyCamera(10) }>Position 3</a>
+                <a className="pg" onClick={ () => dollyCamera(15) }>Position 4</a>
+                <a className="pg" onClick={ () => dollyCamera(20) }>Position 5</a>
             </div>
         </div>
     );
@@ -139,7 +202,7 @@ function ScreenBox(props) {
             <boxBufferGeometry attach="geometry" args={ [1, 1, 1] }/>
             <meshBasicMaterial map={ myTexture } attach="material" color={ hovered ? 'blue' : 'black' }/>
         </mesh>
-    )
+    );
 }
 
 function App() {
@@ -151,41 +214,41 @@ function App() {
                 <ambientLight/>
                 <pointLight position={ [0, 11.713, -2.39] }/>
                 {/* Default starts in center of scene. Objects spaced in increments of 5. */}
-                <ScreenBox position={ [0, 0, 0] }/>
-                <ScreenBox position={ [0, 0, -5] }/>
-                <ScreenBox position={ [0, 0, -10] }/>
-                <ScreenBox position={ [0, 0, -15] }/>
-                <ScreenBox position={ [0, 0, -20] }/>
+                <ScreenBox position={ [0, 0, -2] }/>
+                <ScreenBox position={ [0, 0, -7] }/>
+                <ScreenBox position={ [0, 0, -12] }/>
+                <ScreenBox position={ [0, 0, -17] }/>
+                <ScreenBox position={ [0, 0, -22] }/>
                 {/* Top */}
-                <ScreenBox position={ [0, 2, 2] }/>
-                <ScreenBox position={ [0, 7, 2] }/>
-                <ScreenBox position={ [0, 12, 2] }/>
-                <ScreenBox position={ [0, 17, 2] }/>
-                <ScreenBox position={ [0, 22, 2] }/>
+                <ScreenBox position={ [0, 2, 0] }/>
+                <ScreenBox position={ [0, 7, 0] }/>
+                <ScreenBox position={ [0, 12, 0] }/>
+                <ScreenBox position={ [0, 17, 0] }/>
+                <ScreenBox position={ [0, 22, 0] }/>
                 {/* Bottom */}
-                <ScreenBox position={ [0, -2, 2] }/>
-                <ScreenBox position={ [0, -7, 2] }/>
-                <ScreenBox position={ [0, -12, 2] }/>
-                <ScreenBox position={ [0, -17, 2] }/>
-                <ScreenBox position={ [0, -22, 2] }/>
+                <ScreenBox position={ [0, -2, 0] }/>
+                <ScreenBox position={ [0, -7, 0] }/>
+                <ScreenBox position={ [0, -12, 0] }/>
+                <ScreenBox position={ [0, -17, 0] }/>
+                <ScreenBox position={ [0, -22, 0] }/>
                 {/* Left */}
-                <ScreenBox position={ [2, 0, 2] }/>
-                <ScreenBox position={ [7, 0, 2] }/>
-                <ScreenBox position={ [12, 0, 2] }/>
-                <ScreenBox position={ [17, 0, 2] }/>
-                <ScreenBox position={ [22, 0, 2] }/>
+                <ScreenBox position={ [-2, 0, 0] }/>
+                <ScreenBox position={ [-7, 0, 0] }/>
+                <ScreenBox position={ [-12, 0, 0] }/>
+                <ScreenBox position={ [-17, 0, 0] }/>
+                <ScreenBox position={ [-22, 0, 0] }/>
                 {/* Right */}
-                <ScreenBox position={ [-2, 0, 2] }/>
-                <ScreenBox position={ [-7, 0, 2] }/>
-                <ScreenBox position={ [-12, 0, 2] }/>
-                <ScreenBox position={ [-17, 0, 2] }/>
-                <ScreenBox position={ [-22, 0, 2] }/>
+                <ScreenBox position={ [2, 0, 0] }/>
+                <ScreenBox position={ [7, 0, 0] }/>
+                <ScreenBox position={ [12, 0, 0] }/>
+                <ScreenBox position={ [17, 0, 0] }/>
+                <ScreenBox position={ [22, 0, 0] }/>
                 {/* Behind */}
-                <ScreenBox position={ [0, 0, 4] }/>
-                <ScreenBox position={ [0, 0, 9] }/>
-                <ScreenBox position={ [0, 0, 14] }/>
-                <ScreenBox position={ [0, 0, 19] }/>
-                <ScreenBox position={ [0, 0, 24] }/>
+                <ScreenBox position={ [0, 0, 2] }/>
+                <ScreenBox position={ [0, 0, 7] }/>
+                <ScreenBox position={ [0, 0, 12] }/>
+                <ScreenBox position={ [0, 0, 17] }/>
+                <ScreenBox position={ [0, 0, 22] }/>
 
                 {/* Camera hooks */}
                 <CameraDolly/>
