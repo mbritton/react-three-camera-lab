@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { Canvas, useThree, useFrame } from 'react-three-fiber';
-import { useSpring, UseSpringProps } from 'react-spring';
+import { Canvas, useThree } from 'react-three-fiber';
+import { useSpring } from 'react-spring';
 import './App.css';
 import create from 'zustand';
 import { TextureLoader } from 'three';
@@ -114,14 +114,11 @@ function Menu() {
     }
 
     function tiltCamera(rNo) {
-        console.log('rNo', rNo);
-
+        console.log('tiltCamera:', rNo);
         useStore.setState({ currentTilt: rNo });
-        useStore.setState({ currentDirection : (rNo > 0) ? 'a' : 'u' })
+        useStore.setState({ currentDirection : (rNo > 0) ? 'a' : 'u' });
 
-        useStore.setState({ currentSwivelVector : 'x' });
         useStore.setState({ currentPositionVector : 'y' });
-        useStore.setState({ currentTiltVector : 'x' });
     }
 
     function swivelCamera(sNo) {
@@ -161,6 +158,7 @@ function Menu() {
         <div className="menu">
             <div className="rotateMenuWrapper">
                 <a className="pg" onClick={ () => {
+                    tiltCamera(0);
                     swivelCamera(1.6);
                 } }>Left</a>
                 <a className="pg" onClick={ () => tiltCamera(1.6) }>Up</a>
