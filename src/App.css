@@ -25,8 +25,25 @@ body  {
   justify-content: space-evenly;
 }
 
+.menu.directions-menu {
+  height: 100px;
+  bottom: 0;
+}
+
+.menu.positions-menu {
+  height: 100px;
+  bottom: 100px;
+}
+
 .menu a {
-  padding: 0 0 30px 0;
+  padding: 15px 15px 15px 15px;
+}
+
+.menu a.selected {
+  text-decoration: none;
+  text-underline: black;
+  text-underline-style: thick;
+  background-color: #cecece;
 }
 
 .menu.current {
