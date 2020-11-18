@@ -140,7 +140,7 @@ function CameraSwivel() {
         from: fromObj,
         to: toObj,
         onFrame: useStore.getState().onFrameSwivel
-    })
+    });
 
     return null;
 }
@@ -239,7 +239,6 @@ function DirectionsMenu() {
 }
 
 function PositionsMenu() {
-    const currentPosition = useStore.getState().currentDollyPosition;
 
     function dollyCamera(pNo) {
         const currentDirection = useStore.getState().currentDirection;
