@@ -6,6 +6,16 @@ import create from 'zustand';
 import { TextureLoader } from 'three';
 import myImage from './logo512.png';
 
+let myTexture = null;
+
+const ABOVE = 'a';
+const UNDERNEATH = 'u';
+const LEFT = 'l';
+const RIGHT = 'r';
+const BEHIND = 'b'
+const FORWARD = 'f';
+
+
 const useStore = create((set, get) => ({
     currentDollyPosition: 0,
     currentTilt: 0,
@@ -14,46 +24,78 @@ const useStore = create((set, get) => ({
     currentTiltVector: 'x',
     currentSwivelVector: 'y',
     currentCamera: null,
-    currentDirection: 'f',
-    onFramePosition: ({x,y,z}) => {
-        let curDim = 0;
-        if (x) {
-            curDim = x;
-        } else if (y) {
-            curDim = y;
-        } else if (z) {
-            curDim = z;
+    currentDirection: FORWARD,
+    directionsConfig: [
+        {
+            key: 1,
+            label: 'Left',
+            direction: LEFT
+        },{
+            key: 2,
+            label: 'Up',
+            direction: ABOVE
+        },{
+            key: 3,
+            label: 'Ahead',
+            direction: FORWARD
+        },{
+            key: 4,
+            label: 'Behind',
+            direction: BEHIND
+        },{
+            key: 5,
+            label: 'Down',
+            direction: UNDERNEATH
+        },{
+            key: 6,
+            label: 'Right',
+            direction: RIGHT
         }
-        
-        get().currentCamera.position[get().currentPositionVector] = curDim;
+    ],
+    positionsConfig: [
+        {
+            key: 7,
+            label: 'Position 1',
+            position: 0
+        },{
+            key: 8,
+            label: 'Position 2',
+            position: 5
+        },{
+            key: 9,
+            label: 'Position 3',
+            position: 10
+        },{
+            key: 10,
+            label: 'Position 4',
+            position: 15
+        },{
+            key: 11,
+            label: 'Position 5',
+            position: 20
+        }
+    ],
+    getCurrentAxis: ({x,y,z}) => {
+        let curAxis = 0;
+        if (x) {
+            curAxis = x;
+        } else if (y) {
+            curAxis = y;
+        } else if (z) {
+            curAxis = z;
+        }
+        return curAxis;
+    },
+    onFramePosition: ({x,y,z}) => {
+        get().currentCamera.position[get().currentPositionVector] = get().getCurrentAxis({x,y,z});
     },
     onFrameTilt: ({x,y,z}) => {
-        let curDim = 0;
-        if (x) {
-            curDim = x;
-        } else if (y) {
-            curDim = y;
-        } else if (z) {
-            curDim = z;
-        }
-        
-        get().currentCamera.rotation[get().currentTiltVector] = curDim;
+        get().currentCamera.rotation[get().currentTiltVector] = get().getCurrentAxis({x,y,z});
     },
     onFrameSwivel: ({x,y,z}) => {
-        let curDim = 0;
-        if (x) {
-            curDim = x;
-        } else if (y) {
-            curDim = y;
-        } else if (z) {
-            curDim = z;
-        }
-        
-        get().currentCamera.rotation[get().currentSwivelVector] = curDim;
+        get().currentCamera.rotation[get().currentSwivelVector] = get().getCurrentAxis({x,y,z});
     }
 }));
-
-let myTexture = null;
 
 function CameraDolly() {
     const { camera } = useThree();
@@ -103,50 +145,29 @@ function CameraSwivel() {
     return null;
 }
 
-function Menu() {
-
-    function dollyCamera(pNo) {
-        const isRight = useStore.getState().currentDirection === 'r';
-        const isBehind = useStore.getState().currentDirection === 'b';
-        const isAbove = useStore.getState().currentDirection === 'a';
-        const isUnder = useStore.getState().currentDirection === 'u';
-        useStore.setState({ currentDollyPosition: (isRight || isBehind || isAbove)  ? pNo : -pNo });
-    }
-
-    function tiltCamera(rNo) {
-        console.log('tiltCamera:', rNo);
-        useStore.setState({ currentTilt: rNo });
-        useStore.setState({ currentDirection : (rNo > 0) ? 'a' : 'u' });
-
-        useStore.setState({ currentPositionVector : 'y' });
-    }
+function DirectionsMenu() {
+    const currentDirection = useStore.getState().currentDirection;
 
     function swivelCamera(sNo) {
         if (sNo === 0) {
-            useStore.setState({ currentDirection : 'f' });
             useStore.setState({ currentSwivelVector : 'y' });
             useStore.setState({ currentPositionVector : 'z' });
             useStore.setState({ currentTiltVector : 'x' });
         } else {
-            // It's going clockwise
+            useStore.setState({ currentSwivelVector : 'y' });
+            // Clockwise
             if (sNo < 0) {
-                // It's behind
-                if (sNo == -3.2) {
-                    useStore.setState({ currentDirection: 'b' });
-                    useStore.setState({ currentSwivelVector : 'y' });
+                if (sNo === -3.2) {
+                    // Behind
                     useStore.setState({ currentPositionVector : 'z' });
                     useStore.setState({ currentTiltVector : 'x' });
-                // Else it's right
                 } else {
-                    useStore.setState({ currentDirection: 'r' });
-                    useStore.setState({ currentSwivelVector : 'y' });
+                    // Right
                     useStore.setState({ currentPositionVector : 'x' });
                     useStore.setState({ currentTiltVector : 'z' });
                 }
-            // Else it's left
             } else {
-                useStore.setState({ currentDirection : 'l' });
-                useStore.setState({ currentSwivelVector : 'y' });
+                // Left
                 useStore.setState({ currentPositionVector : 'x' });
                 useStore.setState({ currentTiltVector : 'z' });
             }
@@ -154,31 +175,113 @@ function Menu() {
         useStore.setState({ currentSwivel: sNo });
     }
 
-    return (
-        <div className="menu">
+    function tiltCamera(rNo) {
+        useStore.setState({ currentTilt: rNo });
+        useStore.setState({ currentDirection : (rNo > 0) ? ABOVE : UNDERNEATH });
+        useStore.setState({ currentPositionVector : 'y' });
+    }
+
+    function chooseDirection(p) {
+        useStore.setState({currentDirection: p['direction']});
+
+        switch(p['direction']) {
+            case LEFT:
+                tiltCamera(0);
+                swivelCamera(1.6);
+                break;
+            case RIGHT:
+                swivelCamera(-1.6);
+                break;
+            case ABOVE:
+                tiltCamera(1.6);
+                break;
+            case FORWARD:
+                tiltCamera(0);
+                swivelCamera(0);
+                break;
+            case BEHIND:
+                tiltCamera(0);
+                swivelCamera(-3.2);
+                break;
+            case UNDERNEATH:
+                tiltCamera(-1.6)
+                break;
+            default:
+                tiltCamera(0);
+                swivelCamera(0);
+        }
+
+        for (let pos of document.querySelectorAll('.directions-menu a')) {
+            if (pos.classList.contains('selected')) {
+                pos.classList.remove('selected');
+                pos.classList.add('deselected');
+            }
+            if (p.key == pos.id) {
+                pos.classList.remove('deselected');
+                pos.classList.add('selected');
+            }
+        }
+    }
+
+    return(
+        <div className="menu directions-menu">
             <div className="rotateMenuWrapper">
-                <a className="pg" onClick={ () => {
-                    tiltCamera(0);
-                    swivelCamera(1.6);
-                } }>Left</a>
-                <a className="pg" onClick={ () => tiltCamera(1.6) }>Up</a>
-                <a className="pg" onClick={ () =>  {
-                    tiltCamera(0);
-                    swivelCamera(0);
-                } }>Ahead</a>
-                <a className="pg" onClick={ () =>  {
-                    tiltCamera(0);
-                    swivelCamera(-3.2);
-                } }>Behind</a>
-                <a className="pg" onClick={ () => tiltCamera(-1.6) }>Down</a>
-                <a className="pg" onClick={ () => swivelCamera(-1.6) }>Right</a>
+                {
+                    useStore.getState().directionsConfig.map((p) => {
+                        return(<a id={p['key']} key={p['key']} onClick={ () => chooseDirection(p) }
+                                  className={ (p['direction'] === currentDirection ?
+                                      'selected' : 'deselected') }>{p['label']}</a>);
+                    })
+                }
             </div>
+        </div>
+    );
+}
+
+function PositionsMenu() {
+    const currentPosition = useStore.getState().currentDollyPosition;
+
+    function dollyCamera(pNo) {
+        const currentDirection = useStore.getState().currentDirection;
+        const isRight = currentDirection === RIGHT;
+        const isBehind = currentDirection === BEHIND;
+        const isAbove = currentDirection === ABOVE;
+
+        useStore.setState({ currentDollyPosition: (isRight || isBehind || isAbove)  ? pNo : -pNo });
+    }
+
+    function choosePosition(positionObj) {
+        useStore.setState({currentDollyPosition: positionObj.position});
+
+        dollyCamera(positionObj.position);
+
+        let positions = document.querySelectorAll('.positions-menu a');
+        for (let pos of positions) {
+            if (pos.classList.contains('selected')) {
+                pos.classList.remove('selected');
+                pos.classList.add('deselected');
+            }
+            if (positionObj.key == pos.id) {
+                pos.classList.remove('deselected');
+                pos.classList.add('selected');
+            }
+        }
+    }
+    
+    return (
+        <div className="menu positions-menu">
             <div className="positionMenuWrapper">
-                <a className="pg" onClick={ () => dollyCamera(0) }>Position 1</a>
-                <a className="pg" onClick={ () => dollyCamera(5) }>Position 2</a>
-                <a className="pg" onClick={ () => dollyCamera(10) }>Position 3</a>
-                <a className="pg" onClick={ () => dollyCamera(15) }>Position 4</a>
-                <a className="pg" onClick={ () => dollyCamera(20) }>Position 5</a>
+                {
+                    useStore.getState().positionsConfig.map(
+                        (p) => {
+                            return (
+                                <a id={p['key']} key={p['key']} onClick={ () => choosePosition(p) }
+                                   className={ (p['position'] === useStore.getState().currentDollyPosition ?
+                                       'selected' : 'deselected') }>{p['label']}</a>
+                            );
+                        }
+                    )
+                }
             </div>
         </div>
     );
@@ -205,13 +308,15 @@ function ScreenBox(props) {
 
 function App() {
     const { camera } = useThree();
+
     useStore.setState({currentCamera: camera});
+
     return (
         <div className="App">
-            <Canvas camera={ { position: [0, 0, 0], rotation: [0, 0, 0] } }>
+            <Canvas>
                 <ambientLight/>
                 <pointLight position={ [0, 11.713, -2.39] }/>
-                {/* Default starts in center of scene. Objects spaced in increments of 5. */}
+                {/* Objects spaced in increments of 5 units. */}
                 <ScreenBox position={ [0, 0, -2] }/>
                 <ScreenBox position={ [0, 0, -7] }/>
                 <ScreenBox position={ [0, 0, -12] }/>
@@ -253,7 +358,8 @@ function App() {
                 <CameraTilt/>
                 <CameraSwivel/>
             </Canvas>
-            <Menu/>
+            <DirectionsMenu/>
+            <PositionsMenu/>
         </div>
     );
 }
