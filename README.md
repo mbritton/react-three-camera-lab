@@ -1,24 +1,21 @@
 
-# Camera Movement Lab
+# React Camera Movement Lab
 
-I'm playing with a 3D navigation system and experimenting with camera movements.
+![](scene-02.png?raw=true)
 
-This experiment uses Zustand for state management.
+3D navigation explored as structures accessed via programmatic camera movements by a first-person camera.
+
+Purpose is to explore the potential for a library of camera movement tools.
+
+The first experiment uses Zustand for state management, react-spring for animation, react-three-fiber for 3D (integrates [Three.js](https://threejs.org/))
 
 Mike Britton 2020
 
-## To Demo:
+#### In Progress: Experiment 1 - Basic
+Move from a central point through one of four routes.
 
-1. Click Positions 1-5.
-2. Click back to Position 1.
-3. Click Left.
-4. Click Straight.
-5. Click Right.
-6. Click Straight again.
-7. Click Down.
-8. Click Straight.
-9. Click Up.
-10. Click Straight.
+#### Future: Experiment 2 - Zoom To / Through Cards
+Explore a scattering of screens arranged in the manner of cards flung into 3D space.
 
 ## General
 
