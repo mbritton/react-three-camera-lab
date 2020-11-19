@@ -3,7 +3,7 @@ import { Canvas, useThree } from 'react-three-fiber';
 import { useSpring } from 'react-spring';
 import './App.css';
 import create from 'zustand';
-import { TextureLoader } from 'three';
+import { LogLuvEncoding, TextureLoader } from 'three';
 import myImage from './logo512.png';
 
 let myTexture = null;
@@ -14,7 +14,6 @@ const LEFT = 'l';
 const RIGHT = 'r';
 const BEHIND = 'b'
 const FORWARD = 'f';
-
 
 const useStore = create((set, get) => ({
     currentDollyPosition: 0,
@@ -94,6 +93,45 @@ const useStore = create((set, get) => ({
     },
     onFrameSwivel: ({x,y,z}) => {
         get().currentCamera.rotation[get().currentSwivelVector] = get().getCurrentAxis({x,y,z});
+    },
+    setHighlight: (interactionType, p) => {
+        let positions = document.querySelectorAll('.positions-menu a');
+        let directions = document.querySelectorAll('.directions-menu a');
+        let hasASelected = false;
+
+        if (interactionType ===  'direction') {
+            for (let pos of directions) {
+                if (pos.classList.contains('selected')) {
+                    pos.classList.remove('selected');
+                    pos.classList.add('deselected');
+                }
+                if (p.key == pos.id) {
+                    pos.classList.remove('deselected');
+                    pos.classList.add('selected');
+                }
+            }
+            for (let pos of positions) {
+                pos.classList.remove('selected');
+                positions[0].classList.add('selected');
+            }
+        }
+
+        if (interactionType === 'position') {
+            for (let pos of positions) {
+                pos.classList.remove('selected');
+                if (pos.classList.contains('selected')) {
+                    hasASelected = true;
+                    pos.classList.add('deselected');
+                }
+                if (p.key == pos.id) {
+                    pos.classList.remove('deselected');
+                    pos.classList.add('selected');
+                }
+            }
+            if (hasASelected) {
+                positions[0].classList.add('selected');
+            }
+        }
     }
 }));
 
@@ -137,9 +175,15 @@ function CameraSwivel() {
     toObj[cv] = useStore(state => state.currentSwivel);
 
     useSpring({
+        from: useStore.getState().currentDollyPosition,
+        to: 0,
+        onFrame: useStore.getState().onFramePosition,
+    });
+
+    useSpring({
         from: fromObj,
         to: toObj,
-        onFrame: useStore.getState().onFrameSwivel
+        onFrame: useStore.getState().onFrameSwivel,
     });
 
     return null;
@@ -149,6 +193,7 @@ function DirectionsMenu() {
     const currentDirection = useStore.getState().currentDirection;
 
     function swivelCamera(sNo) {
+        // Set vectors
         if (sNo === 0) {
             useStore.setState({ currentSwivelVector : 'y' });
             useStore.setState({ currentPositionVector : 'z' });
@@ -181,9 +226,17 @@ function DirectionsMenu() {
         useStore.setState({ currentPositionVector : 'y' });
     }
 
-    function chooseDirection(p) {
+    function createSequence(p) {
+        useStore.setState({currentDollyPosition: 0});
         useStore.setState({currentDirection: p['direction']});
+        useStore.getState().setHighlight('direction', p);
 
+        setTimeout(() => {
+            chooseDirection(p);
+        }, 1400);
+    }
+
+    function chooseDirection(p) {
         switch(p['direction']) {
             case LEFT:
                 tiltCamera(0);
@@ -210,17 +263,6 @@ function DirectionsMenu() {
                 tiltCamera(0);
                 swivelCamera(0);
         }
-
-        for (let pos of document.querySelectorAll('.directions-menu a')) {
-            if (pos.classList.contains('selected')) {
-                pos.classList.remove('selected');
-                pos.classList.add('deselected');
-            }
-            if (p.key == pos.id) {
-                pos.classList.remove('deselected');
-                pos.classList.add('selected');
-            }
-        }
     }
 
     return(
@@ -228,7 +270,7 @@ function DirectionsMenu() {
             <div className="rotateMenuWrapper">
                 {
                     useStore.getState().directionsConfig.map((p) => {
-                        return(<a id={p['key']} key={p['key']} onClick={ () => chooseDirection(p) }
+                        return(<a id={p['key']} key={p['key']} onClick={ () => createSequence(p) }
                                   className={ (p['direction'] === currentDirection ?
                                       'selected' : 'deselected') }>{p['label']}</a>);
                     })
@@ -251,20 +293,9 @@ function PositionsMenu() {
 
     function choosePosition(positionObj) {
         useStore.setState({currentDollyPosition: positionObj.position});
+        useStore.getState().setHighlight('position', positionObj);
 
         dollyCamera(positionObj.position);
-
-        let positions = document.querySelectorAll('.positions-menu a');
-        for (let pos of positions) {
-            if (pos.classList.contains('selected')) {
-                pos.classList.remove('selected');
-                pos.classList.add('deselected');
-            }
-            if (positionObj.key == pos.id) {
-                pos.classList.remove('deselected');
-                pos.classList.add('selected');
-            }
-        }
     }
     
     return (
