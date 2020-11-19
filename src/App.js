@@ -222,11 +222,11 @@ function DirectionsMenu() {
 
     function tiltCamera(rNo) {
         useStore.setState({ currentTilt: rNo });
-        useStore.setState({ currentDirection : (rNo > 0) ? ABOVE : UNDERNEATH });
         useStore.setState({ currentPositionVector : 'y' });
     }
 
     function createSequence(p) {
+        console.log('createSequence', p);
         useStore.setState({currentDollyPosition: 0});
         useStore.setState({currentDirection: p['direction']});
         useStore.getState().setHighlight('direction', p);
@@ -283,15 +283,21 @@ function DirectionsMenu() {
 function PositionsMenu() {
 
     function dollyCamera(pNo) {
-        const currentDirection = useStore.getState().currentDirection;
-        const isRight = currentDirection === RIGHT;
-        const isBehind = currentDirection === BEHIND;
-        const isAbove = currentDirection === ABOVE;
 
-        useStore.setState({ currentDollyPosition: (isRight || isBehind || isAbove)  ? pNo : -pNo });
+        const currentDirection = useStore.getState().currentDirection;
+        console.log('currentDirection', currentDirection);
+        const isRight = currentDirection === RIGHT;
+        console.log('isRight', isRight);
+        const isBehind = currentDirection === BEHIND;
+        console.log('isBehind', isBehind);
+        const isAbove = currentDirection === ABOVE;
+        console.log('isAbove', isAbove);
+
+        useStore.setState({ currentDollyPosition: (isRight || isAbove) ? pNo : -pNo });
     }
 
     function choosePosition(positionObj) {
+        console.log('positionObj', positionObj);
         useStore.setState({currentDollyPosition: positionObj.position});
         useStore.getState().setHighlight('position', positionObj);
 
