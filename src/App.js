@@ -6,7 +6,7 @@ import './App.css';
 import create from 'zustand';
 import * as THREE from 'three';
 import { TextureLoader } from 'three';
-import myImage from './up.png';
+import myImage from './resources/images/up.png';
 
 let myTexture = null;
 
@@ -193,6 +193,7 @@ function CameraSwivel() {
 
 function DirectionsMenu() {
     const currentDirection = useStore.getState().currentDirection;
+    let isHomePosition = false;
 
     function swivelCamera(sNo) {
         // Set vectors
@@ -229,17 +230,31 @@ function DirectionsMenu() {
 
     function createSequence(p) {
         useStore.setState({currentDollyPosition: 0});
-        useStore.setState({currentDirection: p['direction']});
-        // Menu
+        useStore.setState({currentDirection: p.direction});
+
         useStore.getState().setHighlight('direction', p);
 
         setTimeout(() => {
             chooseDirection(p);
-        }, 1400);
+        }, 1000);
+    }
+
+    function goMain(p) {
+        setTimeout(() => {
+            tiltCamera(0);
+            swivelCamera(0);
+            useStore.setState({currentDollyPosition: 0});
+
+            setTimeout(() => {
+                isHomePosition = true;
+                useStore.setState({currentDirection: p.direction});
+                chooseDirection(p);
+            }, 500);
+        }, 1000)
     }
 
     function chooseDirection(p) {
-        switch(p['direction']) {
+        switch(p.direction) {
             case LEFT:
                 tiltCamera(0);
                 swivelCamera(1.6);
@@ -248,7 +263,7 @@ function DirectionsMenu() {
                 swivelCamera(-1.6);
                 break;
             case ABOVE:
-                tiltCamera(1.6);
+                isHomePosition ? tiltCamera(1.6) : goMain(p);
                 break;
             case FORWARD:
                 tiltCamera(0);
@@ -259,7 +274,7 @@ function DirectionsMenu() {
                 swivelCamera(-3.2);
                 break;
             case UNDERNEATH:
-                tiltCamera(-1.6)
+                isHomePosition ? tiltCamera(-1.6) : goMain(p);
                 break;
             default:
                 tiltCamera(0);
@@ -322,7 +337,7 @@ function PositionsMenu() {
 function BackgroundDome() {
     return (
         <mesh visible position={[0, 0, -2]} rotation={[0, 0, 0]}>
-            <sphereBufferGeometry args={[20, 16, 16]} />
+            <sphereBufferGeometry args={[24, 16, 16]} />
             <meshStandardMaterial name="material" color="grey" side={THREE.BackSide} />
         </mesh>
     );
@@ -398,10 +413,14 @@ function App() {
                 <CameraDolly/>
                 <CameraTilt/>
                 <CameraSwivel/>
+
+                {/*Background / environment*/}
                 <Suspense>
                     <BackgroundDome/>
                 </Suspense>
             </Canvas>
+
+            {/*Navigation*/}
             <DirectionsMenu/>
             <PositionsMenu/>
 
