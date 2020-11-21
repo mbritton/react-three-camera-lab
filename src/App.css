@@ -1,5 +1,5 @@
 body  {
-  background-image: url("bg-00.png");
+  /*background-image: url("bg-00.png");*/
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -23,6 +23,7 @@ body  {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  font-size: 12px;
 }
 
 .menu.directions-menu {

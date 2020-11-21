@@ -6,7 +6,7 @@ import './App.css';
 import create from 'zustand';
 import * as THREE from 'three';
 import { TextureLoader } from 'three';
-import myImage from './logo512.png';
+import myImage from './up.png';
 
 let myTexture = null;
 
@@ -37,7 +37,7 @@ const useStore = create((set, get) => ({
             direction: ABOVE
         },{
             key: 3,
-            label: 'Ahead',
+            label: 'Main',
             direction: FORWARD
         },{
             key: 4,
@@ -294,7 +294,6 @@ function PositionsMenu() {
     }
 
     function choosePosition(positionObj) {
-        console.log('positionObj', positionObj);
         useStore.setState({currentDollyPosition: positionObj.position});
         useStore.getState().setHighlight('position', positionObj);
 
@@ -324,7 +323,7 @@ function BackgroundDome() {
     return (
         <mesh visible position={[0, 0, -2]} rotation={[0, 0, 0]}>
             <sphereBufferGeometry args={[20, 16, 16]} />
-            <meshStandardMaterial name="material" color="grey" side={THREE.BackSide} transparent />
+            <meshStandardMaterial name="material" color="grey" side={THREE.BackSide} />
         </mesh>
     );
 }
@@ -343,7 +342,7 @@ function ScreenBox(props) {
             onPointerOver={ e => setHover(true) }
             onPointerOut={ e => setHover(false) }>
             <boxBufferGeometry attach="geometry" args={ [1, 1, 1] }/>
-            <meshBasicMaterial map={ myTexture } attach="material" color={ hovered ? 'blue' : 'black' }/>
+            <meshBasicMaterial map={ myTexture } attach="material" transparent />
         </mesh>
     );
 }
