@@ -453,7 +453,7 @@
 				"type": "PerspectiveCamera",
 				"name": "PerspectiveCamera",
 				"layers": 1,
-				"matrix": [-1,0,0,0,0,1,0,0,0,0,-1,0,0,0.00017,2,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0.00017,0,1],
 				"fov": 50,
 				"zoom": 1,
 				"near": 0.1,
@@ -468,7 +468,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-2,1],
 				"geometry": "4F2933B7-E830-4F4F-9C64-40F6E9894D4D",
 				"material": "2F990123-B301-40B4-8F18-42BFE926387E"
 			},
@@ -477,7 +477,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-5,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-7,1],
 				"geometry": "068265D3-6E0A-4505-B067-3A6EC6D83108",
 				"material": "84DFA0A4-0811-4F28-8E59-3F4B72D4E35A"
 			},
@@ -486,7 +486,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-10,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-12,1],
 				"geometry": "ED3C20AE-5002-454D-886D-3647117BB982",
 				"material": "23074854-E6A2-47A5-951B-F98ADD86E26E"
 			},
@@ -495,7 +495,7 @@
 				"type": "PerspectiveCamera",
 				"name": "PerspectiveCamera",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-2.860603,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-5,1],
 				"fov": 50,
 				"zoom": 1,
 				"near": 0.1,
@@ -510,7 +510,7 @@
 				"type": "PerspectiveCamera",
 				"name": "PerspectiveCamera",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-8,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-10,1],
 				"fov": 50,
 				"zoom": 1,
 				"near": 0.1,
@@ -525,7 +525,7 @@
 				"type": "PerspectiveCamera",
 				"name": "PerspectiveCamera",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-13,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-15,1],
 				"fov": 50,
 				"zoom": 1,
 				"near": 0.1,
@@ -540,7 +540,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-15,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-17,1],
 				"geometry": "B145BB84-E533-42F6-9AD4-CA7F680C21BD",
 				"material": "8CE62A84-738A-4800-98F3-AF483BBCC455"
 			},
@@ -549,7 +549,7 @@
 				"type": "PerspectiveCamera",
 				"name": "PerspectiveCamera",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-18,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-20,1],
 				"fov": 50,
 				"zoom": 1,
 				"near": 0.1,
@@ -564,7 +564,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-20,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-22,1],
 				"geometry": "D83BB011-1462-4C02-8C30-AE758EC15BB0",
 				"material": "A2C66494-FEF5-42DB-9157-8186A9B8C909"
 			},
@@ -573,7 +573,7 @@
 				"type": "PointLight",
 				"name": "PointLight",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,11.713301,-2.390435,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,3.546321,7.386587,5.454712,1],
 				"color": 16777215,
 				"intensity": 0.38,
 				"distance": 0,
@@ -599,7 +599,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,2,2,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,2,0,1],
 				"geometry": "791F78A8-6E6B-4E1A-AC4D-F54402B2A35F",
 				"material": "F2CBFAE2-2725-422E-A043-B27CA792DC01"
 			},
@@ -608,7 +608,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,2,0,2,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,2,0,0,1],
 				"geometry": "28EB6129-812A-4CF3-951E-F8F1F0AE437A",
 				"material": "6370BFB9-7DDE-4DFC-AB3C-FE70743EE6B6"
 			},
@@ -617,7 +617,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-2,0,2,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-2,0,0,1],
 				"geometry": "CCDA2806-A3C6-458D-9BB1-550695A98740",
 				"material": "9800910A-4C4D-48EC-ADF7-C2104E3083DB"
 			},
@@ -626,7 +626,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-2,2,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-2,0,1],
 				"geometry": "F6B58869-3A86-4F10-868B-ED9AE3736C78",
 				"material": "C7670001-8A14-413C-A1B3-EE8C1D3A33BF"
 			},
@@ -635,7 +635,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-7,0,2,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-7,0,0,1],
 				"geometry": "FEC403A9-DDAE-424A-9A5E-4D8E94C8E48E",
 				"material": "F7DE9B7C-AD15-4324-B2E9-22A11BB4E98B"
 			},
@@ -644,7 +644,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,7,0,2,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,7,0,0,1],
 				"geometry": "BE880737-69EB-441B-9AB1-BDC124A82FC8",
 				"material": "A432E35B-2859-4007-AC00-EF6A4E7E0F4A"
 			},
@@ -653,7 +653,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,7,2,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,7,0,1],
 				"geometry": "8285F835-6A4E-4005-8666-ED33AE3C8F61",
 				"material": "AE46997B-75C4-49F6-811B-F36D132E5E91"
 			},
@@ -662,7 +662,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,4,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,2,1],
 				"geometry": "CA662761-E287-40AA-BC38-3D95EEAE0748",
 				"material": "6908C7E9-8EBE-46E6-8211-71AE76B6C773"
 			},
@@ -671,7 +671,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,9,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,7,1],
 				"geometry": "B1B42890-20CC-4C3F-8FF9-7828ECA17EE1",
 				"material": "6D77C87F-2132-408F-9D89-B11E1A85051C"
 			},
@@ -680,9 +680,35 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-7,2,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-7,0,1],
 				"geometry": "C6D591EC-D771-4CFE-84B1-19F0FFE6A471",
 				"material": "7A48CCBC-F1F8-47B4-8E9A-DF4FB31C7EA2"
+			},
+			{
+				"uuid": "13110DB2-9542-44BD-8C11-8CA9CDC1B0F3",
+				"type": "PointLight",
+				"name": "PointLight",
+				"layers": 1,
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,-4.011813,-10.924485,-4.517989,1],
+				"color": 16777215,
+				"intensity": 1,
+				"distance": 0,
+				"decay": 1,
+				"shadow": {
+					"camera": {
+						"uuid": "FD90F424-937B-431E-A365-52C875A4C4ED",
+						"type": "PerspectiveCamera",
+						"layers": 1,
+						"fov": 90,
+						"zoom": 1,
+						"near": 0.5,
+						"far": 500,
+						"focus": 10,
+						"aspect": 1,
+						"filmGauge": 35,
+						"filmOffset": 0
+					}
+				}
 			}]
 	}
 }
