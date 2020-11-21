@@ -1,9 +1,11 @@
-import React, { useRef, useState } from 'react';
+import React, { Suspense, useRef, useState } from 'react';
 import { Canvas, useThree } from 'react-three-fiber';
 import { useSpring } from 'react-spring';
 import './App.css';
+
 import create from 'zustand';
-import { LogLuvEncoding, TextureLoader } from 'three';
+import * as THREE from 'three';
+import { TextureLoader } from 'three';
 import myImage from './logo512.png';
 
 let myTexture = null;
@@ -226,9 +228,9 @@ function DirectionsMenu() {
     }
 
     function createSequence(p) {
-        console.log('createSequence', p);
         useStore.setState({currentDollyPosition: 0});
         useStore.setState({currentDirection: p['direction']});
+        // Menu
         useStore.getState().setHighlight('direction', p);
 
         setTimeout(() => {
@@ -283,17 +285,12 @@ function DirectionsMenu() {
 function PositionsMenu() {
 
     function dollyCamera(pNo) {
-
         const currentDirection = useStore.getState().currentDirection;
-        console.log('currentDirection', currentDirection);
         const isRight = currentDirection === RIGHT;
-        console.log('isRight', isRight);
         const isBehind = currentDirection === BEHIND;
-        console.log('isBehind', isBehind);
         const isAbove = currentDirection === ABOVE;
-        console.log('isAbove', isAbove);
 
-        useStore.setState({ currentDollyPosition: (isRight || isAbove) ? pNo : -pNo });
+        useStore.setState({ currentDollyPosition: (isRight || isAbove || isBehind) ? pNo : -pNo });
     }
 
     function choosePosition(positionObj) {
@@ -320,6 +317,15 @@ function PositionsMenu() {
                 }
             </div>
         </div>
+    );
+}
+
+function BackgroundDome() {
+    return (
+        <mesh visible position={[0, 0, -2]} rotation={[0, 0, 0]}>
+            <sphereBufferGeometry args={[20, 16, 16]} />
+            <meshStandardMaterial name="material" color="grey" side={THREE.BackSide} transparent />
+        </mesh>
     );
 }
 
@@ -351,7 +357,7 @@ function App() {
         <div className="App">
             <Canvas>
                 <ambientLight/>
-                <pointLight position={ [0, 11.713, -2.39] }/>
+                <pointLight position={ [0, 3, -2.39] }/>
                 {/* Objects spaced in increments of 5 units. */}
                 <ScreenBox position={ [0, 0, -2] }/>
                 <ScreenBox position={ [0, 0, -7] }/>
@@ -393,9 +399,13 @@ function App() {
                 <CameraDolly/>
                 <CameraTilt/>
                 <CameraSwivel/>
+                <Suspense>
+                    <BackgroundDome/>
+                </Suspense>
             </Canvas>
             <DirectionsMenu/>
             <PositionsMenu/>
+
         </div>
     );
 }
