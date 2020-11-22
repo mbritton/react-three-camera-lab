@@ -228,56 +228,42 @@ function DirectionsMenu() {
         useStore.setState({ currentPositionVector : 'y' });
     }
 
-    function createSequence(p) {
+    function goToForward(p) {
+        console.log('goToForward', p);
         useStore.setState({currentDollyPosition: 0});
-        useStore.setState({currentDirection: p.direction});
+        tiltCamera(0);
+        swivelCamera(0);
 
         useStore.getState().setHighlight('direction', p);
 
         setTimeout(() => {
+            isHomePosition = true;
+            useStore.setState({currentDirection: p.direction});
             chooseDirection(p);
         }, 1000);
-    }
-
-    function goMain(p) {
-        setTimeout(() => {
-            tiltCamera(0);
-            swivelCamera(0);
-            useStore.setState({currentDollyPosition: 0});
-
-            setTimeout(() => {
-                isHomePosition = true;
-                useStore.setState({currentDirection: p.direction});
-                chooseDirection(p);
-            }, 500);
-        }, 1000)
     }
 
     function chooseDirection(p) {
         switch(p.direction) {
             case LEFT:
-                tiltCamera(0);
                 swivelCamera(1.6);
                 break;
             case RIGHT:
                 swivelCamera(-1.6);
                 break;
             case ABOVE:
-                isHomePosition ? tiltCamera(1.6) : goMain(p);
+                tiltCamera(1.6);
                 break;
             case FORWARD:
-                tiltCamera(0);
                 swivelCamera(0);
                 break;
             case BEHIND:
-                tiltCamera(0);
                 swivelCamera(-3.2);
                 break;
             case UNDERNEATH:
-                isHomePosition ? tiltCamera(-1.6) : goMain(p);
+                tiltCamera(-1.6);
                 break;
             default:
-                tiltCamera(0);
                 swivelCamera(0);
         }
     }
@@ -287,9 +273,9 @@ function DirectionsMenu() {
             <div className="rotateMenuWrapper">
                 {
                     useStore.getState().directionsConfig.map((p) => {
-                        return(<a id={p['key']} key={p['key']} onClick={ () => createSequence(p) }
-                                  className={ (p['direction'] === currentDirection ?
-                                      'selected' : 'deselected') }>{p['label']}</a>);
+                        return(<a id={p.key} key={p.key} onClick={ () => goToForward(p) }
+                                  className={ (p.direction === currentDirection ?
+                                      'selected' : 'deselected') }>{p.label}</a>);
                     })
                 }
             </div>
@@ -322,9 +308,9 @@ function PositionsMenu() {
                     useStore.getState().positionsConfig.map(
                         (p) => {
                             return (
-                                <a id={p['key']} key={p['key']} onClick={ () => choosePosition(p) }
+                                <a id={p.key} key={p.key} onClick={ () => choosePosition(p) }
                                    className={ (p['position'] === useStore.getState().currentDollyPosition ?
-                                       'selected' : 'deselected') }>{p['label']}</a>
+                                       'selected' : 'deselected') }>{p.label}</a>
                             );
                         }
                     )
