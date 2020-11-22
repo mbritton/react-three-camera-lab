@@ -1,8 +1,6 @@
-import React, { Suspense, useRef, useState } from 'react';
+import React, { Suspense, useRef } from 'react';
 import { Canvas, useThree } from 'react-three-fiber';
-import { HashRouter as Router } from 'react-router-dom';
 import { useSpring } from 'react-spring';
-
 
 import create from 'zustand';
 import * as THREE from 'three';
@@ -230,21 +228,29 @@ function DirectionsMenu() {
     }
 
     function goToForward(p) {
-        useStore.setState({currentDollyPosition: 0});
 
-        tiltCamera(0);
-        swivelCamera(0);
+        setTimeout(() => {
+            useStore.setState({ currentDollyPosition: 0 });
+            setTimeout(() => {
 
-        useStore.setState({currentPositionVector: 'z'});
-        useStore.setState({currentTiltVector: 'x'});
-        useStore.setState({currentSwivelVector: 'y'});
+                tiltCamera(0);
+                swivelCamera(0);
+
+                useStore.setState({ currentPositionVector: 'z' });
+                useStore.setState({ currentTiltVector: 'x' });
+                useStore.setState({ currentSwivelVector: 'y' });
+
+                setTimeout(() => {
+
+                    useStore.setState({ currentDirection: p.direction });
+                    chooseDirection(p);
+                }, 1000);
+            }, 1000);
+        }, 100);
 
         useStore.getState().setHighlight('direction', p);
 
-        setTimeout(() => {
-            useStore.setState({currentDirection: p.direction});
-            chooseDirection(p);
-        }, 1000);
+
     }
 
     function chooseDirection(p) {
@@ -357,7 +363,7 @@ function Experiment00() {
 
     return (
         <div className="App">
-            <Canvas>
+            <Canvas camera={{position: [0,0,0]}}>
                 <ambientLight/>
                 <pointLight position={ [0, 3, -2.39] }/>
                 {/* Objects spaced in increments of 5 units. */}
@@ -403,7 +409,7 @@ function Experiment00() {
                 <CameraSwivel/>
 
                 {/*Background / environment*/}
-                <Suspense>
+                <Suspense fallback={null}>
                     <BackgroundDome/>
                 </Suspense>
             </Canvas>

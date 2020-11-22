@@ -1,12 +1,12 @@
 import React from 'react';
 import { HashRouter as Router } from 'react-router-dom';
-import Experiment00 from "./experiments/Experiment00";
+import ExperimentIndex from "./experiments/ExperimentIndex";
 import './App.css';
 
 function App() {
     return (
         <Router>
-            <Experiment00 />
+            <ExperimentIndex />
         </Router>
     );
 }
