@@ -7,12 +7,21 @@ body  {
 }
 
 .App {
+  width: 100%;
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   text-align: center;
+}
+
+.menu.experiment-01 {
+  top: 0;
+  border: 1px solid purple;
+  bottom: 100px;
+  left: 0;
+  width: 120px;
 }
 
 .menu {

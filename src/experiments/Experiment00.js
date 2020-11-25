@@ -228,7 +228,6 @@ function DirectionsMenu() {
     }
 
     function goToForward(p) {
-
         setTimeout(() => {
             useStore.setState({ currentDollyPosition: 0 });
             setTimeout(() => {
@@ -236,21 +235,14 @@ function DirectionsMenu() {
                 tiltCamera(0);
                 swivelCamera(0);
 
-                useStore.setState({ currentPositionVector: 'z' });
-                useStore.setState({ currentTiltVector: 'x' });
-                useStore.setState({ currentSwivelVector: 'y' });
-
                 setTimeout(() => {
-
                     useStore.setState({ currentDirection: p.direction });
                     chooseDirection(p);
-                }, 1000);
-            }, 1000);
+                }, 1200);
+            }, 700);
         }, 100);
 
         useStore.getState().setHighlight('direction', p);
-
-
     }
 
     function chooseDirection(p) {
@@ -294,7 +286,6 @@ function DirectionsMenu() {
 }
 
 function PositionsMenu() {
-
     function dollyCamera(pNo) {
 
         const currentDirection = useStore.getState().currentDirection;
@@ -358,7 +349,6 @@ function ScreenBox(props) {
 
 function Experiment00() {
     const { camera } = useThree();
-
     useStore.setState({currentCamera: camera});
 
     return (
@@ -409,7 +399,7 @@ function Experiment00() {
                 <CameraSwivel/>
 
                 {/*Background / environment*/}
-                <Suspense fallback={null}>
+                <Suspense>
                     <BackgroundDome/>
                 </Suspense>
             </Canvas>

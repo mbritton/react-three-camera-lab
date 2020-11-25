@@ -1,16 +1,13 @@
-import React, { Suspense, useRef } from 'react';
-import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
-import Experiment00 from './Experiment00'
+import React from 'react';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import Experiment00 from './Experiment00';
+import Experiment01 from './Experiment01';
 
 export default function ExperimentIndex() {
-    let match = useRouteMatch('/experiments/:name')
     return (
-        <Suspense fallback={() => {
-            console.log('fallback...');
-        }}>
-            <Switch>
-                <Route exact path="/" component={Experiment00} />
-            </Switch>
-        </Suspense>
+        <Switch>
+            <Route exact path="/00" component={ Experiment00 }/>
+            <Route exact path="/01" component={ Experiment01 }/>
+        </Switch>
     );
 }
