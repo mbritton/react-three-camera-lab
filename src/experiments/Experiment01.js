@@ -26,8 +26,9 @@ const useStore = create((set, get) => ({
         let finalQuaternion = new THREE.Quaternion();
 
         get().currentCamera.position.set(x,y,z + 1);
+        // get().currentCamera.quaternion.set(finalQuaternion.x,finalQuaternion.y,finalQuaternion.z, finalQuaternion.w);
 
-        THREE.Quaternion.slerp(sourceQuaternion, destinationQuaternion, finalQuaternion, 1);
+        THREE.Quaternion.slerp(sourceQuaternion, destinationQuaternion, finalQuaternion, 0.01);
 
         get().currentCamera.quaternion.set(finalQuaternion.x, finalQuaternion.y, finalQuaternion.z, finalQuaternion.w);
 
