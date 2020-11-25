@@ -1,19 +1,20 @@
 body  {
   /*background-image: url("./resources/images/bg-00.png");*/
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  /*background-position: center;*/
+  /*background-repeat: no-repeat;*/
+  /*background-attachment: fixed;*/
+  background-color: white;
   font-family: Roboto;
 }
 
 .App {
-  width: 100%;
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   text-align: center;
+  display: flex;
 }
 
 .menu.experiment-01 {
@@ -22,10 +23,12 @@ body  {
   bottom: 100px;
   left: 0;
   width: 120px;
+  font-size: 16px;
+
 }
 
 .menu {
-  position: fixed;
+  /*position: fixed;*/
   left: 0;
   right: 0;
   bottom: 0;
