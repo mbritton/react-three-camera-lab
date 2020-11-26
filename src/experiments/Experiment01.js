@@ -26,32 +26,32 @@ const useStore = create((set, get) => ({
         let finalQuaternion = new THREE.Quaternion();
 
         get().currentCamera.position.set(x,y,z + 1);
-        // get().currentCamera.quaternion.set(finalQuaternion.x,finalQuaternion.y,finalQuaternion.z, finalQuaternion.w);
+        get().currentCamera.quaternion.set(finalQuaternion.x,finalQuaternion.y,finalQuaternion.z, finalQuaternion.w);
 
         THREE.Quaternion.slerp(sourceQuaternion, destinationQuaternion, finalQuaternion, 0.01);
 
         get().currentCamera.quaternion.set(finalQuaternion.x, finalQuaternion.y, finalQuaternion.z, finalQuaternion.w);
 
         // Scene will not render on first load without this.
-        get().currentGL.render(get().currentScene, get().currentCamera);
+        //get().currentGL.render(get().currentScene, get().currentCamera);
     }
 }));
 
 function PositionCamera() {
     
     const { camera, gl, scene, renderer } = useThree();
-    const myTargetVector = useStore.getState().targetVector;
+    let myTargetVector = useStore(state => state.targetVector);
     
     useStore.setState({currentCamera: camera, currentGL: gl, currentScene: scene, currentRenderer: renderer});
 
-    let targetV = myTargetVector ? myTargetVector : new THREE.Vector3(camera.position.x,camera.position.y,camera.position.z);
+    // let targetV = myTargetVector ? myTargetVector : new THREE.Vector3(camera.position.x,camera.position.y,camera.position.z);
     let origPos = new THREE.Vector3().copy(camera.position);
 
     useSpring({
         to: {
-            x: useStore ? useStore.getState().targetVector.x : 0,
-            y: useStore ? useStore.getState().targetVector.y : 0,
-            z: useStore ? useStore.getState().targetVector.z : 0
+            x: myTargetVector.x,
+            y: myTargetVector.y,
+            z: myTargetVector.z
         },
         from: {
             x: origPos ? origPos.x : 0,

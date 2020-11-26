@@ -162,7 +162,7 @@ function CameraTilt() {
     useSpring({
         from: fromObj,
         to: toObj,
-        onFrame: useStore.getState().onFrameTilt
+        onFrame: useStore(state => state.onFrameTilt)
     })
 
     return null;
@@ -176,23 +176,23 @@ function CameraSwivel() {
     toObj[cv] = useStore(state => state.currentSwivel);
 
     useSpring({
-        from: useStore.getState().currentDollyPosition,
+        from: useStore(state => state.currentDollyPosition),
         to: 0,
-        onFrame: useStore.getState().onFramePosition,
+        onFrame: useStore(state => state.onFramePosition)
     });
 
     useSpring({
         from: fromObj,
         to: toObj,
-        onFrame: useStore.getState().onFrameSwivel,
+        onFrame: useStore(state => state.onFrameSwivel)
     });
 
     return null;
 }
 
 function DirectionsMenu() {
-    const currentDirection = useStore.getState().currentDirection;
-    const directionsConfig = useStore.getState().directionsConfig;
+    const currentDirection = useStore(state => state.currentDirection);
+    const directionsConfig = useStore(state => state.directionsConfig);
 
     function swivelCamera(sNo) {
         // Set vectors
@@ -241,8 +241,6 @@ function DirectionsMenu() {
                 }, 1200);
             }, 700);
         }, 100);
-
-        useStore.getState().setHighlight('direction', p);
     }
 
     function chooseDirection(p) {
