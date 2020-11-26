@@ -1,5 +1,5 @@
 import React, { useRef, Suspense } from 'react';
-import { Canvas, useThree } from 'react-three-fiber';
+import { Canvas, useThree, useFrame } from 'react-three-fiber';
 import { useSpring } from 'react-spring';
 import create from 'zustand';
 import { PerspectiveCamera, TextureLoader } from 'three';
@@ -14,52 +14,22 @@ const useStore = create((set, get) => ({
     currentGL: null,
     currentScene: null,
     currentRenderer: null,
-    targetVector: new THREE.Vector3(0,0,5),
-    onFrame: ({x,y,z}) => {
-        let destinationRotation = new THREE.Euler().copy(get().currentCamera.rotation);
-
-        // Current camera's quaternion
-        let sourceQuaternion = new THREE.Quaternion().copy(get().currentCamera.quaternion);
-
-        // Destination quaternion
-        let destinationQuaternion = new THREE.Quaternion().setFromEuler(destinationRotation);
-        let finalQuaternion = new THREE.Quaternion();
-
-        get().currentCamera.position.set(x,y,z + 1);
-        get().currentCamera.quaternion.set(finalQuaternion.x,finalQuaternion.y,finalQuaternion.z, finalQuaternion.w);
-
-        THREE.Quaternion.slerp(sourceQuaternion, destinationQuaternion, finalQuaternion, 0.01);
-
-        get().currentCamera.quaternion.set(finalQuaternion.x, finalQuaternion.y, finalQuaternion.z, finalQuaternion.w);
-
-        // Scene will not render on first load without this.
-        //get().currentGL.render(get().currentScene, get().currentCamera);
-    }
+    selectedQuaternion: new THREE.Quaternion(0,0,0,.5),
+    targetVector: new THREE.Vector3(0,0,0)
 }));
 
 function PositionCamera() {
     
     const { camera, gl, scene, renderer } = useThree();
+    // Will receive change every time targetVector changes
     let myTargetVector = useStore(state => state.targetVector);
-    
-    useStore.setState({currentCamera: camera, currentGL: gl, currentScene: scene, currentRenderer: renderer});
+    let dstQ = useStore(state => state.selectedQuaternion);
+    myTargetVector.setZ(myTargetVector.z + 1);
 
-    // let targetV = myTargetVector ? myTargetVector : new THREE.Vector3(camera.position.x,camera.position.y,camera.position.z);
-    let origPos = new THREE.Vector3().copy(camera.position);
-
-    useSpring({
-        to: {
-            x: myTargetVector.x,
-            y: myTargetVector.y,
-            z: myTargetVector.z
-        },
-        from: {
-            x: origPos ? origPos.x : 0,
-            y: origPos ? origPos.y : 0,
-            z: origPos ? origPos.z : 0
-        },
-        onFrame: useStore.getState().onFrame
-    });
+    useFrame(() => {
+        camera.quaternion.slerp(dstQ, .03);
+        camera.position.lerp(myTargetVector, 0.03);
+    })
 
     return null;
 }
@@ -92,13 +62,17 @@ function Menu() {
 function Experiment01() {
 
     const onScreenClickHandler = (e) => {
-        let selectedObjectVector = new THREE.Vector3(e.object.position.x, e.object.position.y, e.object.position.z);
-        useStore.setState({ targetVector: selectedObjectVector });
+        console.log('e.object', e.object.quaternion);
+        // let selectedObjectVector = new THREE.Vector3(e.object.position.x, e.object.position.y, e.object.position.z);
+        useStore.setState({ targetVector: new THREE.Vector3().copy(e.object.position), selectedQuaternion: e.object.quaternion });
+
+        const foo = useStore.getState().selectedQuaternion;
+        console.log('foo', foo);
     }
 
     return(
         <div className="App">
-            <Canvas id="scene-container" camera={{position: [0,0,0], name:"larry"}}>
+            <Canvas id="scene-container">
                 <ambientLight />
                 <pointLight position={ [0, 3, -2.39] }/>
 
@@ -108,9 +82,7 @@ function Experiment01() {
                 <ScreenBox onClick={onScreenClickHandler} position={ [-2, -4, -6] } />
                 <ScreenBox onClick={onScreenClickHandler} rotation={[0, -.3, 0]} position={ [-6, -4, -12] } />
 
-                <Suspense>
-                    <PositionCamera />
-                </Suspense>
+                <PositionCamera />
             </Canvas>
             <Menu />
         </div>
