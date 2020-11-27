@@ -1,4 +1,4 @@
-import React, { Suspense, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Canvas, useThree } from 'react-three-fiber';
 import { useSpring } from 'react-spring';
 
@@ -192,10 +192,8 @@ function Navigation() {
 
     function setHighlight(p) {
         let menuItems = document.querySelectorAll('.menu.directions-menu a');
-        let hasPosition = false;
-        if (p.position !== undefined) {
-            hasPosition = true;
-        }
+        let hasPosition = (p.position !== undefined) ? true : false;
+        let hasDirection = (p.direction !== undefined) ? true : false;
         if (hasPosition === false) {
             document.querySelectorAll('.menu.directions-menu a').forEach((itm) => {
                 if (itm.id == p.key) {
@@ -211,10 +209,9 @@ function Navigation() {
             } else  {
                 itm.classList.remove('selected');
             }
-
         });
 
-        if (p.direction !== undefined) {
+        if (hasDirection === true) {
             document.querySelectorAll('.menu.positions-menu a').forEach((itm) => {
                 if (itm.id == 7) {
                     console.log('MATCH', itm);
@@ -226,7 +223,6 @@ function Navigation() {
     }
 
     function goToMain(p) {
-        console.log('goToMain', p);
         setHighlight(p);
 
         setTimeout(() => {
@@ -397,13 +393,9 @@ function Experiment00() {
                 <CameraSwivel/>
 
                 {/*Background / environment*/ }
-                <Suspense>
-                    <BackgroundDome/>
-                </Suspense>
+                <BackgroundDome/>
             </Canvas>
-
             <Navigation/>
-
         </div>
     );
 }
