@@ -1,5 +1,4 @@
 body  {
-  /*background-image: url("./resources/images/bg-00.png");*/
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -15,16 +14,22 @@ body  {
   right: 0;
   text-align: center;
   display: flex;
+  flex-direction: column;
 }
 
-.menu.experiment-01 {
+.experiment-01 {
   position: fixed;
   bottom: 0;
-  width: 200px;
+  width: 100px;
   height: 100px;
-  right: 0;
+  right: 10px;
   font-size: 18px;
-  justify-content: right;
+  z-index: 102;
+}
+
+.experiment-01 button {
+  width: 75px;
+  height: 75px;
 }
 
 .menu {
@@ -37,16 +42,17 @@ body  {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  font-size: 12px;
+  font-size: 16px;
+
 }
 
 .menu.directions-menu {
-  height: 100px;
+  height: 80px;
   bottom: 0;
 }
 
 .menu.positions-menu {
-  height: 100px;
+  height: 50px;
   bottom: 100px;
 }
 
@@ -55,13 +61,14 @@ body  {
 }
 
 .menu a.selected {
-  text-decoration: none;
+  text-decoration: underline;
   text-underline: black;
   text-underline-style: thick;
-  background-color: #cecece;
+  background-color: #bcbbbb;
+  text-underline: black;
 }
 
-.menu.current {
+.menu .current {
   text-underline: black;
 }
 
@@ -79,7 +86,7 @@ body  {
   justify-content: space-evenly;
 }
 
-.main {
+.index-menu {
   position: fixed;
   right: 0;
   top: 0;

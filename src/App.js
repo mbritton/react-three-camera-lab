@@ -8,7 +8,7 @@ function App() {
     return (
         <Router>
             <div>
-                <div className="main">
+                <div className="index-menu">
                     <ul>
                         <li>
                             <Link to="/">Index</Link>

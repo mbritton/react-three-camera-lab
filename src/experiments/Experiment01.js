@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { Canvas, useFrame, useThree } from 'react-three-fiber';
 import create from 'zustand';
 import * as THREE from 'three';
-import { TextureLoader } from 'three';
+import { TextureLoader, Plane } from 'three';
 import myImage from "../resources/images/up.png";
 
 let myTexture = null;
@@ -21,11 +21,10 @@ function PositionCamera() {
     // Get the  selected object's quaternion
     let dstQ = useStore(state => state.selectedQuaternion);
     // Use offsets to center the object in frame
-    myTargetVector.setZ(myTargetVector.z + .7);
-    // myTargetVector.setX(myTargetVector.x + .1);
+    myTargetVector.setZ(myTargetVector.z + .9);
 
     useFrame(() => {
-        camera.quaternion.slerp(dstQ, .03);
+        camera.quaternion.slerp(dstQ, .2);
         camera.position.lerp(myTargetVector, 0.1);
     })
 
@@ -53,7 +52,7 @@ function Menu() {
         useStore.setState({ targetVector: new THREE.Vector3(0,.5,3), selectedQuaternion: useStore.getState().originalCameraQuaternion });
     }
     return (
-      <div className="menu experiment-01"><a onClick={onHomeClickHandler}>Zoom Out</a></div>
+      <div className="experiment-01"><button onClick={onHomeClickHandler}>Back</button></div>
     );
 }
 
@@ -65,18 +64,17 @@ function Experiment01() {
 
     return(
         <div className="App">
-            <Menu />
             <Canvas id="scene-container">
                 <ambientLight />
                 <pointLight position={ [0, 3, -2.39] }/>
                 <ScreenBox onClick={onScreenClickHandler} rotation={[0, .3, 0]} position={ [0, 0, -1] } />
-                <ScreenBox onClick={onScreenClickHandler} position={ [2, 2, -4] } />
-                <ScreenBox onClick={onScreenClickHandler} position={ [0, 4, -2] } />
-                <ScreenBox onClick={onScreenClickHandler} position={ [-2, -4, -6] } />
+                <ScreenBox onClick={onScreenClickHandler} rotation={[0, -.5, 0]} position={ [2, 2, -4] } />
+                <ScreenBox onClick={onScreenClickHandler} rotation={[0, .5, 0]} position={ [0, 3, -2] } />
+                <ScreenBox onClick={onScreenClickHandler} rotation={[0, .2, 0]} position={ [-2, -4, -6] } />
                 <ScreenBox onClick={onScreenClickHandler} rotation={[0, -.3, 0]} position={ [-6, -4, -12] } />
                 <PositionCamera />
             </Canvas>
-
+            <Menu />
         </div>
     );
 }
