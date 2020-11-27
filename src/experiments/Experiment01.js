@@ -2,16 +2,12 @@ import React, { useRef } from 'react';
 import { Canvas, useFrame, useThree } from 'react-three-fiber';
 import create from 'zustand';
 import * as THREE from 'three';
-import { PerspectiveCamera, TextureLoader } from 'three';
+import { TextureLoader } from 'three';
 import myImage from "../resources/images/up.png";
 
 let myTexture = null;
 
 const useStore = create((set, get) => ({
-    currentCamera: new PerspectiveCamera(),
-    currentGL: null,
-    currentScene: null,
-    currentRenderer: null,
     originalCameraQuaternion: new THREE.Quaternion(0,0,0,.5),
     selectedQuaternion: new THREE.Quaternion(0,0,0,.5),
     targetVector: new THREE.Vector3(0,.5,3)
@@ -26,7 +22,7 @@ function PositionCamera() {
     let dstQ = useStore(state => state.selectedQuaternion);
     // Use offsets to center the object in frame
     myTargetVector.setZ(myTargetVector.z + .7);
-    // myTargetVector.setX(myTargetVector.x + .08);
+    // myTargetVector.setX(myTargetVector.x + .1);
 
     useFrame(() => {
         camera.quaternion.slerp(dstQ, .03);
@@ -48,17 +44,16 @@ function ScreenBox(props) {
             ref={ mesh }>
             <boxBufferGeometry attach="geometry" args={ [1.3, 1, .03] }/>
             <meshBasicMaterial map={ myTexture } attach="material" transparent />
-
         </mesh>
     );
 }
 
 function Menu() {
-    function onHomeClickHandler() {
+    const onHomeClickHandler = () => {
         useStore.setState({ targetVector: new THREE.Vector3(0,.5,3), selectedQuaternion: useStore.getState().originalCameraQuaternion });
     }
     return (
-      <div className="menu experiment-01"><a onClick={onHomeClickHandler}>Home</a></div>
+      <div className="menu experiment-01"><a onClick={onHomeClickHandler}>Zoom Out</a></div>
     );
 }
 
@@ -70,6 +65,7 @@ function Experiment01() {
 
     return(
         <div className="App">
+            <Menu />
             <Canvas id="scene-container">
                 <ambientLight />
                 <pointLight position={ [0, 3, -2.39] }/>
@@ -80,7 +76,7 @@ function Experiment01() {
                 <ScreenBox onClick={onScreenClickHandler} rotation={[0, -.3, 0]} position={ [-6, -4, -12] } />
                 <PositionCamera />
             </Canvas>
-            <Menu />
+
         </div>
     );
 }

@@ -353,7 +353,8 @@ function Experiment00() {
         <div className="App">
             <Canvas camera={{position: [0,0,0]}}>
                 <ambientLight/>
-                <pointLight position={ [0, 3, -2.39] }/>
+                <pointLight position={ [3.546, 7.387, 5.455] }/>
+                <pointLight position={ [-4.012, -10.924, -4.518] }/>
                 {/* Objects spaced in increments of 5 units. */}
                 <ScreenBox position={ [0, 0, -2] }/>
                 <ScreenBox position={ [0, 0, -7] }/>

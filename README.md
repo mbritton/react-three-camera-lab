@@ -1,7 +1,6 @@
 
 # React / Three.js Camera Movement Lab
 
-![](scene-02.png?raw=true)
 
 3D navigation explored as structures accessed via programmatic first-person camera movements.
 
@@ -11,11 +10,12 @@ The first experiment uses Zustand for state management, react-spring for animati
 
 Mike Britton 2020
 
-#### In Progress: Experiment 1 - Basic
+#### Experiment 1 - Basic
+![](scene-02.png?raw=true)
 Move from a central point through one of four routes. Switch routes by dollying through 3D space. 
 
-#### Future: Experiment 2 - Zoom To / Through Cards
-Explore a scattering of screens arranged in the manner of cards flung into 3D space.
+#### Experiment 2 - Zoom To / Through Cards
+Explore a scattering of screens arranged in 3D space.
 
 ## General
 
