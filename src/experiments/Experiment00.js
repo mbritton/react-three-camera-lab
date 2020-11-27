@@ -86,45 +86,6 @@ const useStore = create((set, get) => ({
             curAxis = z;
         }
         return curAxis;
-    },
-    setHighlight: (interactionType, p) => {
-        let positions = document.querySelectorAll('.positions-menu a');
-        let directions = document.querySelectorAll('.directions-menu a');
-        let hasASelected = false;
-
-        if (interactionType === 'direction') {
-            for (let pos of directions) {
-                if (pos.classList.contains('selected')) {
-                    pos.classList.remove('selected');
-                    pos.classList.add('deselected');
-                }
-                if (p.key == pos.id) {
-                    pos.classList.remove('deselected');
-                    pos.classList.add('selected');
-                }
-            }
-            for (let pos of positions) {
-                pos.classList.remove('selected');
-                positions[ 0 ].classList.add('selected');
-            }
-        }
-
-        if (interactionType === 'position') {
-            for (let pos of positions) {
-                pos.classList.remove('selected');
-                if (pos.classList.contains('selected')) {
-                    hasASelected = true;
-                    pos.classList.add('deselected');
-                }
-                if (p.key == pos.id) {
-                    pos.classList.remove('deselected');
-                    pos.classList.add('selected');
-                }
-            }
-            if (hasASelected) {
-                positions[ 0 ].classList.add('selected');
-            }
-        }
     }
 }));
 
@@ -192,7 +153,7 @@ function CameraSwivel() {
     return null;
 }
 
-function DirectionsMenu() {
+function Navigation() {
     const currentDirection = useStore(state => state.currentDirection);
     const directionsConfig = useStore(state => state.directionsConfig);
 
@@ -229,7 +190,45 @@ function DirectionsMenu() {
         useStore.setState({ currentPositionAxis: 'y' });
     }
 
-    function goToForward(p) {
+    function setHighlight(p) {
+        let menuItems = document.querySelectorAll('.menu.directions-menu a');
+        let hasPosition = false;
+        if (p.position !== undefined) {
+            hasPosition = true;
+        }
+        if (hasPosition === false) {
+            document.querySelectorAll('.menu.directions-menu a').forEach((itm) => {
+                if (itm.id == p.key) {
+                    itm.classList.add('selected');
+                } else {
+                    itm.classList.remove('selected')
+                }
+            });
+        }
+        document.querySelectorAll('.menu.positions-menu a').forEach((itm) => {
+            if (itm.id == p.key) {
+                itm.classList.add('selected');
+            } else  {
+                itm.classList.remove('selected');
+            }
+
+        });
+
+        if (p.direction !== undefined) {
+            document.querySelectorAll('.menu.positions-menu a').forEach((itm) => {
+                if (itm.id == 7) {
+                    console.log('MATCH', itm);
+                    itm.classList.remove('deselected');
+                    itm.classList.add('selected');
+                }
+            })
+        }
+    }
+
+    function goToMain(p) {
+        console.log('goToMain', p);
+        setHighlight(p);
+
         setTimeout(() => {
             useStore.setState({ currentDollyPosition: 0 });
             setTimeout(() => {
@@ -270,25 +269,13 @@ function DirectionsMenu() {
         }
     }
 
-    return (
-        <div className="menu directions-menu">
-            <div className="rotateMenuWrapper">
-                {
-                    directionsConfig.map((p) => {
-                        return (<a id={ p.key } key={ p.key } onClick={ () => goToForward(p) }
-                                   className={ (p.direction === currentDirection ?
-                                       'selected' : 'deselected') }>{ p.label }</a>);
-                    })
-                }
-            </div>
-        </div>
-    );
-}
+    function choosePosition(positionObj) {
+        useStore.setState({ currentDollyPosition: positionObj.position });
+        dollyCamera(positionObj.position);
+        setHighlight(positionObj);
+    }
 
-function PositionsMenu() {
     function dollyCamera(pNo) {
-
-        const currentDirection = useStore.getState().currentDirection;
         const isRight = currentDirection === RIGHT;
         const isBehind = currentDirection === BEHIND;
         const isAbove = currentDirection === ABOVE;
@@ -296,26 +283,30 @@ function PositionsMenu() {
         useStore.setState({ currentDollyPosition: (isRight || isAbove || isBehind) ? pNo : - pNo });
     }
 
-    function choosePosition(positionObj) {
-        useStore.setState({ currentDollyPosition: positionObj.position });
-        dollyCamera(positionObj.position);
-        useStore.getState().setHighlight('position', positionObj);
-    }
-
     return (
-        <div className="menu positions-menu">
-            <div className="positionMenuWrapper">
-                {
-                    useStore.getState().positionsConfig.map(
-                        (p) => {
-                            return (
-                                <a id={ p.key } key={ p.key } onClick={ () => choosePosition(p) }
-                                   className={ (p.position === useStore.getState().currentDollyPosition ?
-                                       'selected' : 'deselected') }>{ p.label }</a>
-                            );
-                        }
-                    )
-                }
+        <div>
+            <div className="menu directions-menu">
+                <div className="rotateMenuWrapper">
+                    {
+                        directionsConfig.map((p) => {
+                            return (<a id={ p.key } key={ p.key } onClick={ (e) => goToMain(p) }>{ p.label }</a>);
+                        })
+                    }
+                </div>
+            </div>
+            <div className="menu positions-menu">
+                <div className="positionMenuWrapper">
+                    {
+                        useStore.getState().positionsConfig.map(
+                            (p) => {
+                                return (
+                                    <a id={ p.key } key={ p.key } onClick={ () => choosePosition(p) }
+                                       className="deselected">{ p.label }</a>
+                                );
+                            }
+                        )
+                    }
+                </div>
             </div>
         </div>
     );
@@ -411,9 +402,7 @@ function Experiment00() {
                 </Suspense>
             </Canvas>
 
-            {/*Navigation*/ }
-            <DirectionsMenu/>
-            <PositionsMenu/>
+            <Navigation/>
 
         </div>
     );
