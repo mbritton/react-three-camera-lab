@@ -11,11 +11,12 @@ The first experiment uses Zustand for state management, react-spring for animati
 Mike Britton 2020
 
 #### Experiment 1 - Basic
-![](scene-02.png?raw=true)
-Move from a central point through one of four routes. Switch routes by dollying through 3D space. 
+![](experiment-00.png?raw=true)
+Move from a central point through one of four routes. Switch routes by moving through 3D space. 
 
 #### Experiment 2 - Zoom To / Through Cards
-Explore a scattering of screens arranged in 3D space.
+![](experiment-01.png?raw=true)
+Explore an arrangement of screens arranged in 3D space.
 
 ## General
 

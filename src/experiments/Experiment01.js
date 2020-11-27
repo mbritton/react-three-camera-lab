@@ -41,7 +41,7 @@ function ScreenBox(props) {
         <mesh
             { ...props }
             ref={ mesh }>
-            <boxBufferGeometry attach="geometry" args={ [1.3, 1, .03] }/>
+            <boxBufferGeometry attach="geometry" args={ [1.3, 1, .01] }/>
             <meshBasicMaterial map={ myTexture } attach="material" transparent />
         </mesh>
     );

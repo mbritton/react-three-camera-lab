@@ -468,7 +468,7 @@
 				"type": "Mesh",
 				"name": "Box",
 				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-2,1],
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-0.00582,-2.00029,1],
 				"geometry": "4F2933B7-E830-4F4F-9C64-40F6E9894D4D",
 				"material": "2F990123-B301-40B4-8F18-42BFE926387E"
 			},
@@ -491,51 +491,6 @@
 				"material": "23074854-E6A2-47A5-951B-F98ADD86E26E"
 			},
 			{
-				"uuid": "332863B3-F203-485F-9BA3-A26298E9F7F1",
-				"type": "PerspectiveCamera",
-				"name": "PerspectiveCamera",
-				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-5,1],
-				"fov": 50,
-				"zoom": 1,
-				"near": 0.1,
-				"far": 2000,
-				"focus": 10,
-				"aspect": 1.483032,
-				"filmGauge": 35,
-				"filmOffset": 0
-			},
-			{
-				"uuid": "F050E146-D487-455D-8425-30B9D989A808",
-				"type": "PerspectiveCamera",
-				"name": "PerspectiveCamera",
-				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-10,1],
-				"fov": 50,
-				"zoom": 1,
-				"near": 0.1,
-				"far": 2000,
-				"focus": 10,
-				"aspect": 1.483032,
-				"filmGauge": 35,
-				"filmOffset": 0
-			},
-			{
-				"uuid": "015158F5-B461-463A-9968-30C324CC07EB",
-				"type": "PerspectiveCamera",
-				"name": "PerspectiveCamera",
-				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-15,1],
-				"fov": 50,
-				"zoom": 1,
-				"near": 0.1,
-				"far": 2000,
-				"focus": 10,
-				"aspect": 1.483032,
-				"filmGauge": 35,
-				"filmOffset": 0
-			},
-			{
 				"uuid": "A1AAB14D-6FC9-40A0-977A-BEE1C105CAA0",
 				"type": "Mesh",
 				"name": "Box",
@@ -543,21 +498,6 @@
 				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-17,1],
 				"geometry": "B145BB84-E533-42F6-9AD4-CA7F680C21BD",
 				"material": "8CE62A84-738A-4800-98F3-AF483BBCC455"
-			},
-			{
-				"uuid": "DE0EB4E5-D74A-446D-952F-620249D148CA",
-				"type": "PerspectiveCamera",
-				"name": "PerspectiveCamera",
-				"layers": 1,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,-20,1],
-				"fov": 50,
-				"zoom": 1,
-				"near": 0.1,
-				"far": 2000,
-				"focus": 10,
-				"aspect": 1.483032,
-				"filmGauge": 35,
-				"filmOffset": 0
 			},
 			{
 				"uuid": "B84F1B53-FBFB-42A4-9DF4-FCF89E976493",
