@@ -4,7 +4,7 @@ import { useSpring } from 'react-spring';
 
 import create from 'zustand';
 import * as THREE from 'three';
-import { TextureLoader } from 'three';
+import { log, TextureLoader } from 'three';
 import myImage from '../resources/images/up.png';
 import sphereTexture from '../resources/images/01_10Pattern06.jpg';
 
@@ -18,6 +18,7 @@ const BEHIND = 'b'
 const FORWARD = 'f';
 
 const useStore = create((set, get) => ({
+    componentJustMounted: true,
     currentDollyPosition: 0,
     currentTilt: 0,
     currentSwivel: 0,
@@ -86,6 +87,15 @@ const useStore = create((set, get) => ({
             curAxis = z;
         }
         return curAxis;
+    },
+    getHomePosition: () => {
+        let homePos = 0;
+        get().positionsConfig.forEach((itm) => {
+            if (itm && itm.position === 0) {
+                homePos = itm;
+            }
+        })
+        return homePos;
     }
 }));
 
@@ -156,6 +166,8 @@ function CameraSwivel() {
 function Navigation() {
     const currentDirection = useStore(state => state.currentDirection);
     const directionsConfig = useStore(state => state.directionsConfig);
+    const positions = useStore(state => state.positionsConfig);
+    let componentJustMounted = true;
 
     function swivelCamera(sNo) {
         // Set vectors
@@ -191,10 +203,18 @@ function Navigation() {
     }
 
     function setHighlight(p) {
-        let menuItems = document.querySelectorAll('.menu.directions-menu a');
         let hasPosition = (p.position !== undefined) ? true : false;
         let hasDirection = (p.direction !== undefined) ? true : false;
-        if (hasPosition === false) {
+        let homePosition = useStore.getState().getHomePosition();
+
+        if (hasDirection === true) {
+            document.querySelectorAll('.menu.positions-menu a').forEach((itm) => {
+                itm.classList.remove('selected');
+                if (itm.id == homePosition.key) {
+                    itm.classList.remove('deselected');
+                    itm.classList.add('selected');
+                }
+            });
             document.querySelectorAll('.menu.directions-menu a').forEach((itm) => {
                 if (itm.id == p.key) {
                     itm.classList.add('selected');
@@ -203,27 +223,20 @@ function Navigation() {
                 }
             });
         }
-        document.querySelectorAll('.menu.positions-menu a').forEach((itm) => {
-            if (itm.id == p.key) {
-                itm.classList.add('selected');
-            } else  {
-                itm.classList.remove('selected');
-            }
-        });
-
-        if (hasDirection === true) {
+        
+        if (hasPosition === true) {
             document.querySelectorAll('.menu.positions-menu a').forEach((itm) => {
-                if (itm.id == 7) {
-                    console.log('MATCH', itm);
+                itm.classList.remove('selected');
+                if (itm.id == p.key) {
                     itm.classList.remove('deselected');
                     itm.classList.add('selected');
                 }
-            })
+            });
         }
     }
 
     function goToMain(p) {
-        setHighlight(p);
+        setHighlight(p, false);
 
         setTimeout(() => {
             useStore.setState({ currentDollyPosition: 0 });
@@ -268,15 +281,30 @@ function Navigation() {
     function choosePosition(positionObj) {
         useStore.setState({ currentDollyPosition: positionObj.position });
         dollyCamera(positionObj.position);
-        setHighlight(positionObj);
+        setHighlight(positionObj, false);
     }
 
     function dollyCamera(pNo) {
         const isRight = currentDirection === RIGHT;
         const isBehind = currentDirection === BEHIND;
         const isAbove = currentDirection === ABOVE;
-
         useStore.setState({ currentDollyPosition: (isRight || isAbove || isBehind) ? pNo : - pNo });
+    }
+
+    if (useStore.getState().componentJustMounted === true) {
+        setTimeout(() => {
+            setHighlight({
+                key: 7,
+                label: "Position 1",
+                position: 0
+            });
+            setHighlight({
+                key: 3,
+                label: 'Main',
+                direction: FORWARD
+            });
+        }, 1000);
+        useStore.setState({componentJustMounted: false});
     }
 
     return (
@@ -293,7 +321,7 @@ function Navigation() {
             <div className="menu positions-menu">
                 <div className="positionMenuWrapper">
                     {
-                        useStore.getState().positionsConfig.map(
+                        positions.map(
                             (p) => {
                                 return (
                                     <a id={ p.key } key={ p.key } onClick={ () => choosePosition(p) }

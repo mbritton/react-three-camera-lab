@@ -13,9 +13,9 @@ const useStore = create((set, get) => ({
     targetVector: new THREE.Vector3(0,.5,3)
 }));
 
-function PositionCamera() {
+function CameraController() {
     
-    const { camera, gl, scene, renderer } = useThree();
+    const { camera } = useThree();
     // Will receive change every time targetVector changes
     let myTargetVector = useStore(state => state.targetVector);
     // Get the  selected object's quaternion
@@ -66,13 +66,13 @@ function Experiment01() {
         <div className="App">
             <Canvas id="scene-container">
                 <ambientLight />
-                <pointLight position={ [0, 3, -2.39] }/>
+                <pointLight position={ [0, 3, -2.39] } />
                 <ScreenBox onClick={onScreenClickHandler} rotation={[0, .3, 0]} position={ [0, 0, -1] } />
                 <ScreenBox onClick={onScreenClickHandler} rotation={[0, -.5, 0]} position={ [2, 2, -4] } />
                 <ScreenBox onClick={onScreenClickHandler} rotation={[0, .5, 0]} position={ [0, 3, -2] } />
                 <ScreenBox onClick={onScreenClickHandler} rotation={[0, .2, 0]} position={ [-2, -4, -6] } />
                 <ScreenBox onClick={onScreenClickHandler} rotation={[0, -.3, 0]} position={ [-6, -4, -12] } />
-                <PositionCamera />
+                <CameraController />
             </Canvas>
             <Menu />
         </div>
