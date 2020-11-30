@@ -1,95 +1,106 @@
 import React, { useRef } from 'react';
-import { Canvas, useFrame, useThree } from 'react-three-fiber';
+import { Canvas, extend, useFrame, useThree } from 'react-three-fiber';
 import create from 'zustand';
 import * as THREE from 'three';
-import { TextureLoader, Object3D } from "three";
-import myImage from "../resources/images/up.png";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { Vector3 } from "three";
 
 let myTexture = null;
 let group = new THREE.Object3D();
 let myMesh;
 
-const useStore = create((set, get) => ({
+extend({ OrbitControls });
 
+const useStore = create((set, get) => ({
+    targetVector: new Vector3(0,0,15),
+    selectedQuaternion: null,
+    selectedObject: null
 }));
 
 function CameraController() {
+    const { camera, gl: { domElement } } = useThree();
+    const controls = useRef();
+    // controls.enabled = false;
+    useFrame((state) => controls.current.update());
+
+    return <orbitControls ref={ controls } args={ [camera, domElement] }/>;
+}
+
+function CameraZoomie() {
     const { camera } = useThree();
+    let myTargetVector  = useStore(state => state.targetVector);
+    const targetObject = useStore(state => state.selectedObject);
+    // let dstQ = useStore(state => state.selectedQuaternion);
+    let dstQ = useStore(state => state.selectedQuaternion);
+
+    // Use offsets to center the object in frame
+    myTargetVector.setZ(myTargetVector.z + .9);
 
     useFrame(() => {
-
+        //camera.quaternion.slerp(dstQ, .05);
+        camera.position.lerp(myTargetVector, 0.05);
     });
 
     return null;
 }
 
-function Menu() {
-    const onClickHandler = () => {
-    }
-    return (
-      <div className="experiment-02"><button onClick={onClickHandler}>Back</button></div>
-    );
+function ScreenObject(props) {
+    const mesh = useRef();
+    return (<mesh
+        { ...props }
+        ref={ mesh }
+        scale={ [1, 1, 1] }
+        onClick={ (e) => {
+            useStore.setState({
+                targetObject: e.object,
+                targetVector: new THREE.Vector3().copy(e.object.position),
+                selectedObject: e.object,
+                selectedQuaternion: e.object.quaternion});
+        } }>
+        <boxBufferGeometry attach="geometry" args={ [1.3, 1, .01] }/>
+        <meshBasicMaterial attach="material" transparent side={ THREE.DoubleSide }/>
+    </mesh>);
 }
 
 function Group() {
     const { scene, camera } = useThree();
-    let geometry = new THREE.BoxGeometry(1.3, 1, .01);
 
     const material = new THREE.MeshBasicMaterial({
         color: 0xcecece,
         flatShading: true,
         transparent: true,
-        opacity: .7,
+        opacity: .7
     });
 
-    for (let i=0; i<7; i++) {
-        myMesh = new THREE.Mesh(geometry, material);
-        myMesh.position.x = (Math.random() - 0.5) * 10;
-        myMesh.position.y = (Math.random() - 0.5) * 10;
-        myMesh.position.z = (Math.random() - 0.5) * 10;
-        myMesh.rotation.x = Math.random();
-        myMesh.rotation.y = Math.random();
-        myMesh.rotation.z = Math.random();
+    const arr = [1, 1, 1, 1, 1, 1, 1];
 
-        group.add(myMesh);
-    }
     const helper = new THREE.CameraHelper(camera);
-    scene.add(helper);
-    scene.add(group);
+    scene.add(helper, group);
 
-    return null;
-}
-
-function ScreenBox(props) {
-    const mesh = useRef();
-
-    return (
-        <mesh
-            ref={ mesh }>
-            <boxBufferGeometry attach="geometry" args={ [1, 1, 1] } />
-            <meshBasicMaterial color="blue" attach="material" transparent />
-        </mesh>
-    );
+    return (<group>
+        { arr.map((item) => {
+            return (<ScreenObject
+                key={ Date.now() + Math.random() * 20 }
+                position={ [(Math.random() - 0.5) * 20, (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10] }
+                rotation={ [(Math.random() - 0.5), (Math.random() - 0.5), (Math.random() - 0.5)] }/>);
+        }) }
+    </group>);
 }
 
 function Experiment02() {
 
-    return(
+    function init() {
+        console.log('init'  );
+    }
+    return (
         <div className="App">
-            <Canvas id="scene-container" camera={{position: [0,0,12]}}>
-                <ambientLight />
-                <pointLight position={ [0, 3, -2.39] } />
-                <Group />
-
-                {/*<ScreenBox rotation={[0, .3, 0]} position={ [0, 0, -1] } />*/}
-                {/*<ScreenBox rotation={[0, -.5, 0]} position={ [2, 2, -4] } />*/}
-                {/*<ScreenBox rotation={[0, .5, 0]} position={ [0, 3, -2] } />*/}
-                {/*<ScreenBox rotation={[0, .2, 0]} position={ [-2, -4, -6] } />*/}
-                {/*<ScreenBox rotation={[0, -.3, 0]} position={ [-6, -4, -12] } />*/}
-                <CameraController />
+            <Canvas onLoad={() => init()} id="scene-container" camera={ { position: [0, 0, 12] } }>
+                <CameraController/>
+                <CameraZoomie/>
+                <ambientLight/>
+                <pointLight position={ [0, 3, - 2.39] }/>
+                <Group/>
             </Canvas>
-            {/*<Menu />*/}
-
         </div>
     );
 }

@@ -10,14 +10,14 @@ Mike Britton 2020
 
 #### Experiment 1 - Basic Structured Movement
 ![](experiment-00.png?raw=true)
-Move from a central point through one of four routes. Switch routes by moving through 3D space. 
+Move from a central point through one of six routes. 
 
 #### Experiment 2 - Zoom To a Clicked Screen
 ![](experiment-01.png?raw=true)
 Explore an arrangement of screens.
 
-#### Experiment 3 - Zoom To / Through Cards
-Explore an arrangement of randomly positioned screens.
+#### Experiment 3 - In Progress...
+Explore an arrangement of randomly positioned and rotated screens. Grouping and an orbit.
 
 ## General
 

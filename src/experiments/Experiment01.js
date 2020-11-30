@@ -15,7 +15,11 @@ const useStore = create((set, get) => ({
 }));
 
 function CameraController() {
-    const { camera } = useThree();
+    const { camera, scene } = useThree();
+
+    const helper = new THREE.CameraHelper(camera);
+    scene.add(helper);
+
     // Will receive change every time targetVector changes
     let myTargetVector = useStore(state => state.targetVector);
     // Get the  selected object's quaternion
@@ -49,6 +53,7 @@ function ScreenBox(props) {
 }
 
 function Menu() {
+
     const onHomeClickHandler = () => {
         useStore.setState({ targetVector: new THREE.Vector3(0,.5,3), selectedQuaternion: useStore.getState().originalCameraQuaternion });
     }
@@ -59,6 +64,7 @@ function Menu() {
 }
 
 function Experiment01() {
+
     const onScreenClickHandler = (e) => {
         useStore.setState({ targetVector: new THREE.Vector3().copy(e.object.position),
             selectedQuaternion: e.object.quaternion,
