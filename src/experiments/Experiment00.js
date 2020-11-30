@@ -202,24 +202,22 @@ function Navigation() {
         useStore.setState({ currentPositionAxis: 'y' });
     }
 
-    function setHighlight(p) {
-        let hasPosition = (p.position !== undefined) ? true : false;
-        let hasDirection = (p.direction !== undefined) ? true : false;
+    function setHighlight(interaction) {
+        let hasPosition = (interaction.position !== undefined) ? true : false;
+        let hasDirection = (interaction.direction !== undefined) ? true : false;
         let homePosition = useStore.getState().getHomePosition();
 
         if (hasDirection === true) {
             document.querySelectorAll('.menu.positions-menu a').forEach((itm) => {
                 itm.classList.remove('selected');
                 if (itm.id == homePosition.key) {
-                    itm.classList.remove('deselected');
                     itm.classList.add('selected');
                 }
             });
             document.querySelectorAll('.menu.directions-menu a').forEach((itm) => {
-                if (itm.id == p.key) {
+                itm.classList.remove('selected');
+                if (itm.id == interaction.key) {
                     itm.classList.add('selected');
-                } else {
-                    itm.classList.remove('selected')
                 }
             });
         }
@@ -227,8 +225,7 @@ function Navigation() {
         if (hasPosition === true) {
             document.querySelectorAll('.menu.positions-menu a').forEach((itm) => {
                 itm.classList.remove('selected');
-                if (itm.id == p.key) {
-                    itm.classList.remove('deselected');
+                if (itm.id == interaction.key) {
                     itm.classList.add('selected');
                 }
             });
@@ -236,10 +233,9 @@ function Navigation() {
     }
 
     function goToMain(p) {
-        setHighlight(p, false);
-
         setTimeout(() => {
             useStore.setState({ currentDollyPosition: 0 });
+            setHighlight(p);
             setTimeout(() => {
 
                 tiltCamera(0);
@@ -250,7 +246,7 @@ function Navigation() {
                     chooseDirection(p);
                 }, 1200);
             }, 700);
-        }, 100);
+        }, 500);
     }
 
     function chooseDirection(p) {
@@ -281,7 +277,7 @@ function Navigation() {
     function choosePosition(positionObj) {
         useStore.setState({ currentDollyPosition: positionObj.position });
         dollyCamera(positionObj.position);
-        setHighlight(positionObj, false);
+        setHighlight(positionObj);
     }
 
     function dollyCamera(pNo) {

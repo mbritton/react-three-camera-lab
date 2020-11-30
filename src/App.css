@@ -31,6 +31,10 @@ body  {
   width: 75px;
   height: 75px;
 }
+.experiment-02 button {
+  width: 75px;
+  height: 75px;
+}
 
 .menu {
   z-index: 100;
