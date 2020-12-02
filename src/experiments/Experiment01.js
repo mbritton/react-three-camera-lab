@@ -17,8 +17,8 @@ const useStore = create((set, get) => ({
 function CameraController() {
     const { camera, scene } = useThree();
 
-    const helper = new THREE.CameraHelper(camera);
-    scene.add(helper);
+    // const helper = new THREE.CameraHelper(camera);
+    // scene.add(helper);
 
     // Will receive change every time targetVector changes
     let myTargetVector = useStore(state => state.targetVector);

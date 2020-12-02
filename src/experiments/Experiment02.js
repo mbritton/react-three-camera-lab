@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Canvas, extend, useFrame, useThree } from 'react-three-fiber';
 import create from 'zustand';
 import * as THREE from 'three';
+import {Quaternion} from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Vector3 } from "three";
 
@@ -13,31 +14,42 @@ extend({ OrbitControls });
 
 const useStore = create((set, get) => ({
     targetVector: new Vector3(0,0,15),
-    selectedQuaternion: null,
-    selectedObject: null
+    selectedQuaternion: new Quaternion(0,0,0),
+    selectedObject: null,
+    enableControls: true
 }));
 
-function CameraController() {
-    const { camera, gl: { domElement } } = useThree();
-    const controls = useRef();
-    // controls.enabled = false;
-    useFrame((state) => controls.current.update());
+const CameraController = () => {
+    const { camera, gl } = useThree();
+    const ec = useStore(state => state.enableControls);
+    useEffect(
+        () => {
+            const controls = new OrbitControls(camera, gl.domElement);
 
-    return <orbitControls ref={ controls } args={ [camera, domElement] }/>;
-}
+            controls.minDistance = 3;
+            controls.maxDistance = 20;
+            controls.enabled = false;
+            controls.enablePan = false;
+            controls.enableRotate = ec;
+            return () => {
+                controls.dispose();
+            };
+        },
+        [camera, gl]
+    );
+    return null;
+};
 
 function CameraZoomie() {
     const { camera } = useThree();
     let myTargetVector  = useStore(state => state.targetVector);
-    const targetObject = useStore(state => state.selectedObject);
-    // let dstQ = useStore(state => state.selectedQuaternion);
     let dstQ = useStore(state => state.selectedQuaternion);
 
     // Use offsets to center the object in frame
     myTargetVector.setZ(myTargetVector.z + .9);
 
     useFrame(() => {
-        //camera.quaternion.slerp(dstQ, .05);
+        camera.quaternion.slerp(dstQ, .05);
         camera.position.lerp(myTargetVector, 0.05);
     });
 
@@ -55,7 +67,8 @@ function ScreenObject(props) {
                 targetObject: e.object,
                 targetVector: new THREE.Vector3().copy(e.object.position),
                 selectedObject: e.object,
-                selectedQuaternion: e.object.quaternion});
+                selectedQuaternion: e.object.quaternion,
+                enableControls: false});
         } }>
         <boxBufferGeometry attach="geometry" args={ [1.3, 1, .01] }/>
         <meshBasicMaterial attach="material" transparent side={ THREE.DoubleSide }/>
@@ -72,13 +85,8 @@ function Group() {
         opacity: .7
     });
 
-    const arr = [1, 1, 1, 1, 1, 1, 1];
-
-    const helper = new THREE.CameraHelper(camera);
-    scene.add(helper, group);
-
     return (<group>
-        { arr.map((item) => {
+        { [1, 1, 1, 1, 1, 1, 1].map((item) => {
             return (<ScreenObject
                 key={ Date.now() + Math.random() * 20 }
                 position={ [(Math.random() - 0.5) * 20, (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10] }

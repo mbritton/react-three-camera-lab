@@ -26,9 +26,9 @@ function App() {
                     </ul>
                 </div>
                 <Switch>
-                    <Route exact path="/00" component={ Experiment00 }/>
-                    <Route exact path="/01" component={ Experiment01 }/>
-                    <Route exact path="/02" component={ Experiment02 }/>
+                    <Route path="/00" component={ Experiment00 }/>
+                    <Route path="/01" component={ Experiment01 }/>
+                    <Route path="/02" component={ Experiment02 }/>
                 </Switch>
             </div>
         </Router>
