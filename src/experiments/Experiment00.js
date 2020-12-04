@@ -202,36 +202,6 @@ function Navigation() {
         useStore.setState({ currentPositionAxis: 'y' });
     }
 
-    function setHighlight(interaction) {
-        let hasPosition = (interaction.position !== undefined) ? true : false;
-        let hasDirection = (interaction.direction !== undefined) ? true : false;
-        let homePosition = useStore.getState().getHomePosition();
-
-        if (hasDirection === true) {
-            document.querySelectorAll('.menu.positions-menu a').forEach((itm) => {
-                itm.classList.remove('selected');
-                if (itm.id == homePosition.key) {
-                    itm.classList.add('selected');
-                }
-            });
-            document.querySelectorAll('.menu.directions-menu a').forEach((itm) => {
-                itm.classList.remove('selected');
-                if (itm.id == interaction.key) {
-                    itm.classList.add('selected');
-                }
-            });
-        }
-        
-        if (hasPosition === true) {
-            document.querySelectorAll('.menu.positions-menu a').forEach((itm) => {
-                itm.classList.remove('selected');
-                if (itm.id == interaction.key) {
-                    itm.classList.add('selected');
-                }
-            });
-        }
-    }
-
     function goToMain(p) {
         setTimeout(() => {
             useStore.setState({ currentDollyPosition: 0 });
@@ -366,8 +336,42 @@ function ScreenBox(props) {
     );
 }
 
-function Experiment00() {
+const setHighlight = (interaction) => {
+    let hasPosition = (interaction.position !== undefined) ? true : false;
+    let hasDirection = (interaction.direction !== undefined) ? true : false;
+    let homePosition = useStore.getState().getHomePosition();
 
+    if (hasDirection === true) {
+        document.querySelectorAll('.menu.positions-menu a').forEach((itm) => {
+            itm.classList.remove('selected');
+            if (itm.id == homePosition.key) {
+                itm.classList.add('selected');
+            }
+        });
+        document.querySelectorAll('.menu.directions-menu a').forEach((itm) => {
+            itm.classList.remove('selected');
+            if (itm.id == interaction.key) {
+                itm.classList.add('selected');
+            }
+        });
+    }
+
+    if (hasPosition === true) {
+        document.querySelectorAll('.menu.positions-menu a').forEach((itm) => {
+            itm.classList.remove('selected');
+            if (itm.id == interaction.key) {
+                itm.classList.add('selected');
+            }
+        });
+    }
+}
+
+function Experiment00() {
+    if (useStore.getState().componentJustMounted === false) {
+        setTimeout(()  => {
+            setHighlight({key: 3, label: "Main", direction: "f"});
+        }, 1000);
+    }
     return (
         <div className="App">
             <Canvas>
