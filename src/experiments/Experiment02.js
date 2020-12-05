@@ -12,6 +12,7 @@ let myMesh;
 extend({ OrbitControls });
 
 const useStore = create((set, get) => ({
+    controls: null,
     targetVector: new Vector3(0, 0, 15),
     selectedQuaternion: new THREE.Quaternion(0, 0, 0),
     homeQuaternion: new THREE.Quaternion(0, 0, 0, .5),
@@ -55,12 +56,15 @@ const useStore = create((set, get) => ({
 const CameraController = () => {
     const { camera, gl } = useThree();
     const ec = useStore(state => state.enableControls);
-    const controls = new OrbitControls(camera, gl.domElement);
-    useEffect(
-        () => {
-            controls.minDistance = 3;
-            controls.maxDistance = 20;
+    let controls = new OrbitControls(camera, gl.domElement);
+
+    useEffect( () => {
+            controls.minDistance = 1;
             controls.enabled = ec;
+            controls.enableRotate = ec;
+            controls.enablePan = ec;
+            if (ec === false) return;
+
             return () => {
                 controls.dispose();
             };
@@ -74,13 +78,15 @@ function CameraZoomie() {
     const { camera } = useThree();
     let myTargetVector = useStore(state => state.targetVector);
     let dstQ = useStore(state => state.selectedQuaternion);
+    const ec = useStore(state => state.enableControls);
 
     // Use offsets to center the object in frame
     myTargetVector.setZ(myTargetVector.z + .9);
 
     useFrame(() => {
-        camera.quaternion.slerp(dstQ, .05);
-        camera.position.lerp(myTargetVector, 0.05);
+        if (ec === true) return;
+        camera.quaternion.slerp(dstQ, .1);
+        camera.position.lerp(myTargetVector, 0.1);
     });
 
     return null;
@@ -101,21 +107,12 @@ function ScreenObject(props) {
                 enableControls: false
             });
         } }>
-        <boxBufferGeometry attach="geometry" args={ [1.3, 1, .01] }/>
-        <meshBasicMaterial attach="material" transparent side={ THREE.DoubleSide }/>
+        <boxBufferGeometry attach="geometry" args={ [1.3, 1, .01] } />
+        <meshBasicMaterial attach="material" transparent side={ THREE.DoubleSide } />
     </mesh>);
 }
 
 function Group() {
-    const { scene, camera } = useThree();
-
-    const material = new THREE.MeshBasicMaterial({
-        color: 0xcecece,
-        flatShading: true,
-        transparent: true,
-        opacity: .7
-    });
-
     return (<group>
         { useStore.getState().screens.map((item) => {
             return (<ScreenObject
@@ -130,7 +127,8 @@ function Menu() {
     const onHomeClicked = () => {
         useStore.setState({
             targetVector: new THREE.Vector3(0, 0, 12),
-            selectedQuaternion: useStore.getState().homeQuaternion
+            selectedQuaternion: useStore.getState().homeQuaternion,
+            enableControls: false
         });
     }
     return (
@@ -140,39 +138,22 @@ function Menu() {
     );
 }
 
+function RotateButton() {
+    const controlsEnabled = useStore(state => state.enableControls);
+    const onClicked = () => {
+        useStore.setState({
+            enableControls: !useStore.getState().enableControls
+        });
+        console.log('enableControls:', useStore.getState().enableControls);
+    }
+    return (
+        <div >
+            <button className="rotate-button" onClick={ onClicked }>{ !controlsEnabled ? "Enable" : "Disable" }  Rotate </button>
+        </div>
+    );
+}
+
 function Experiment02() {
-    let moved = false;
-    let elem = document.querySelector('.App');
-
-    let downListener = (e) => {
-        moved = false;
-    }
-
-    let upListener = (e) => {
-        if (moved) {
-            console.log('Moved');
-            useStore.setState({enableControls: true});
-        } else {
-            console.log('Not Moved');
-            useStore.setState({enableControls: false});
-        }
-    }
-
-    let moveListener = (e) => {
-        moved = true;
-    }
-
-    const init = () => {
-        setTimeout(() => {
-            elem = document.querySelector('.App');
-            elem.addEventListener('mousedown', downListener);
-            elem.addEventListener('mouseup', upListener);
-            elem.addEventListener('mousemove', moveListener);
-        }, 1000);
-    }
-
-    init();
-
     return (
         <div className="App">
             <Canvas id="scene-container" camera={ { position: [0, 0, 12] } }>
@@ -183,6 +164,7 @@ function Experiment02() {
                 <Group/>
             </Canvas>
             <Menu/>
+            <RotateButton/>
         </div>
     );
 }

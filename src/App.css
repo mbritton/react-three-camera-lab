@@ -31,9 +31,20 @@ body  {
   width: 75px;
   height: 75px;
 }
+
 .experiment-02 button {
   width: 75px;
   height: 75px;
+}
+
+.rotate-button {
+  position: fixed;
+  bottom: 130px;
+  width: 75px;
+  height: 75px;
+  right: 22px;
+  font-size: 13px;
+  z-index: 102;
 }
 
 .menu {
