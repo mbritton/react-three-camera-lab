@@ -1,20 +1,14 @@
-import React, { useEffect, useRef } from 'react';
-import { Canvas, extend, useFrame, useThree } from 'react-three-fiber';
+import React, { useRef } from 'react';
+import { Canvas, useFrame, useThree } from 'react-three-fiber';
 import create from 'zustand';
 import * as THREE from 'three';
 import { Vector3 } from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-let myTexture = null;
-let group = new THREE.Object3D();
-let myMesh;
-
-extend({ OrbitControls });
-
 const useStore = create((set, get) => ({
     controls: null,
     targetVector: new Vector3(0, 0, 15),
-    selectedQuaternion: new THREE.Quaternion(0, 0, 0),
+    selectedQuaternion: new THREE.Quaternion(0, 0, 0, .5),
     homeQuaternion: new THREE.Quaternion(0, 0, 0, .5),
     selectedObject: null,
     enableControls: false,
@@ -53,40 +47,49 @@ const useStore = create((set, get) => ({
     ],
 }));
 
-const CameraController = () => {
+const init = () => {
+    useStore.setState({
+        targetVector: new THREE.Vector3(0, 0, 15),
+        selectedQuaternion: useStore.getState().homeQuaternion,
+        enableControls: true
+    });
+}
+
+const Orbiter = () => {
     const { camera, gl } = useThree();
-    const ec = useStore(state => state.enableControls);
-    let controls = new OrbitControls(camera, gl.domElement);
+    const enableControls = useStore(state => state.enableControls);
+    let storeControls = useStore(state => state.controls);
 
-    useEffect( () => {
-            controls.minDistance = 1;
-            controls.enabled = ec;
-            controls.enableRotate = ec;
-            controls.enablePan = ec;
-            if (ec === false) return;
+    if (storeControls === null) {
+        storeControls = new OrbitControls(camera, gl.domElement);
+        useStore.setState({ controls: storeControls });
+    }
 
-            return () => {
-                controls.dispose();
-            };
-        },
-        [camera, gl]
-    );
+    storeControls.enabled = enableControls;
+    storeControls.enableRotate = enableControls;
+    storeControls.enablePan = enableControls;
+    storeControls.enableZoom = enableControls;
+    storeControls.enableDamping = enableControls;
+    storeControls.enableKeys = enableControls;
+    storeControls.noPan = enableControls;
+
     return null;
 };
 
-function CameraZoomie() {
+function CameraZoomer() {
     const { camera } = useThree();
-    let myTargetVector = useStore(state => state.targetVector);
-    let dstQ = useStore(state => state.selectedQuaternion);
-    const ec = useStore(state => state.enableControls);
+    const enableControls = useStore(state => state.enableControls);
+    const targetVector = useStore(state => state.targetVector);
+    let myTargetVector = (enableControls === false) ? targetVector : camera.position;
+    const selQ = useStore(state => state.selectedQuaternion);
+    const dstQ = (enableControls === false) ? selQ : camera.quaternion;
 
     // Use offsets to center the object in frame
-    myTargetVector.setZ(myTargetVector.z + .9);
+    myTargetVector.setZ(myTargetVector.z + .6);
 
     useFrame(() => {
-        if (ec === true) return;
-        camera.quaternion.slerp(dstQ, .1);
-        camera.position.lerp(myTargetVector, 0.1);
+        camera.quaternion.slerp(dstQ, .05);
+        camera.position.lerp(myTargetVector, 0.05);
     });
 
     return null;
@@ -100,15 +103,14 @@ function ScreenObject(props) {
         scale={ [1, 1, 1] }
         onClick={ (e) => {
             useStore.setState({
-                targetObject: e.object,
                 targetVector: new THREE.Vector3().copy(e.object.position),
                 selectedObject: e.object,
                 selectedQuaternion: e.object.quaternion,
                 enableControls: false
             });
         } }>
-        <boxBufferGeometry attach="geometry" args={ [1.3, 1, .01] } />
-        <meshBasicMaterial attach="material" transparent side={ THREE.DoubleSide } />
+        <boxBufferGeometry attach="geometry" args={ [1.3, 1, .01] }/>
+        <meshBasicMaterial color={ 0x006eff } attach="material" side={ THREE.DoubleSide }/>
     </mesh>);
 }
 
@@ -126,7 +128,7 @@ function Group() {
 function Menu() {
     const onHomeClicked = () => {
         useStore.setState({
-            targetVector: new THREE.Vector3(0, 0, 12),
+            targetVector: new THREE.Vector3(0, 0, 15),
             selectedQuaternion: useStore.getState().homeQuaternion,
             enableControls: false
         });
@@ -138,27 +140,31 @@ function Menu() {
     );
 }
 
-function RotateButton() {
+function RotateButton(ce) {
     const controlsEnabled = useStore(state => state.enableControls);
     const onClicked = () => {
         useStore.setState({
             enableControls: !useStore.getState().enableControls
         });
-        console.log('enableControls:', useStore.getState().enableControls);
     }
     return (
-        <div >
-            <button className="rotate-button" onClick={ onClicked }>{ !controlsEnabled ? "Enable" : "Disable" }  Rotate </button>
+        <div>
+            <button className="rotate-button"
+                    onClick={ onClicked }>{ (controlsEnabled === false) ? "Enable" : "Disable" } Rotate
+            </button>
         </div>
     );
 }
 
 function Experiment02() {
+
+    init();
+
     return (
         <div className="App">
             <Canvas id="scene-container" camera={ { position: [0, 0, 12] } }>
-                <CameraController/>
-                <CameraZoomie/>
+                <Orbiter/>
+                <CameraZoomer/>
                 <ambientLight/>
                 <pointLight position={ [0, 3, - 2.39] }/>
                 <Group/>
