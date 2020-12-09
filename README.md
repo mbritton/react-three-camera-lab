@@ -16,7 +16,8 @@ Move from a central point through one of six routes.
 ![](experiment-01.png?raw=true)
 Explore an arrangement of screens.
 
-#### Experiment 3 - In Progress...
+#### Experiment 3 - Rotate Group
+![](cameralab-gif-01.gif?raw=true)
 Explore an arrangement of randomly positioned and rotated screens. Grouping and an orbit.
 
 ## General
