@@ -16,9 +16,12 @@ Move from a central point through one of six routes.
 ![](experiment-01.png?raw=true)
 Explore an arrangement of screens.
 
-#### Experiment 3 - Rotate Group
+#### Experiment 3 - Rotatable and Slerpable Group
 ![](cameralab-gif-01.gif?raw=true)
 Explore an arrangement of randomly positioned and rotated screens. Grouping and an orbit.
+
+#### Experiment 4 - Video and Webcam functionality
+This one could get weird.
 
 ## General
 
