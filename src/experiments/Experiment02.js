@@ -85,11 +85,11 @@ function CameraZoomer() {
     const dstQ = (enableControls === false) ? selQ : camera.quaternion;
 
     // Use offsets to center the object in frame
-    myTargetVector.setZ(myTargetVector.z + .6);
+    myTargetVector.setZ(myTargetVector.z + .8);
 
     useFrame(() => {
-        camera.quaternion.slerp(dstQ, .05);
-        camera.position.lerp(myTargetVector, 0.05);
+        camera.quaternion.slerp(dstQ, .08);
+        camera.position.lerp(myTargetVector, 0.1);
     });
 
     return null;

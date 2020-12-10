@@ -9,7 +9,7 @@ These experiments use [Zustand](https://github.com/pmndrs/zustand) for state man
 Mike Britton 2020
 
 #### Experiment 1 - Basic Structured Movement
-![](experiment-00.png?raw=true)
+![](experiment-00.png?raw=true) 
 Move from a central point through one of six routes. 
 
 #### Experiment 2 - Zoom To a Clicked Screen

@@ -37,6 +37,19 @@ body  {
   height: 75px;
 }
 
+.experiment-03 {
+  bottom: 120px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 45px;
+}
+
+.experiment-03 button {
+  width: 75px;
+  height: 62px;
+}
+
 .rotate-button {
   position: fixed;
   bottom: 130px;
