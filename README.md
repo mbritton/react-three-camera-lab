@@ -1,10 +1,12 @@
 
-# React / Three.js Camera Movement Lab
+# React / Three.js Camera Lab
 
 
 3D navigation explored as structures accessed via programmatic first-person camera movements. 
 
 These experiments use [Zustand](https://github.com/pmndrs/zustand) for state management, [react-spring](https://www.react-spring.io/) for animation, [react-three-fiber](https://github.com/pmndrs/react-three-fiber) for 3D (integrates [Three.js](https://threejs.org/))
+
+
 
 Mike Britton 2020
 
@@ -20,8 +22,11 @@ Explore an arrangement of screens.
 ![](cameralab-gif-01.gif?raw=true)
 Explore an arrangement of randomly positioned and rotated screens. Grouping and an orbit.
 
-#### Experiment 4 - Video and Webcam functionality
-This one could get weird.
+#### Experiment 4 - Video and Webcam Fun
+Webcam in a scene, on a Panel.
+
+#### Experiment 5 - HUD and Multiple Scenes (In Progress)
+Multiple scenes on screen, intercommunication...
 
 ## General
 

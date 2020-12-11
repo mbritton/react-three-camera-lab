@@ -48,8 +48,6 @@ const useStore = create((set, get) => ({
 }));
 
 const init = () => {
-
-
     useStore.setState({
         targetVector: new THREE.Vector3(0, 0, 15),
         selectedQuaternion: useStore.getState().homeQuaternion,
@@ -158,7 +156,7 @@ function RotateButton(ce) {
     );
 }
 
-function Experiment02() {
+function Experiment04() {
 
     init();
 
@@ -177,4 +175,4 @@ function Experiment02() {
     );
 }
 
-export default Experiment02;
+export default Experiment04;

@@ -125,3 +125,11 @@ body  {
   width: 200px;
   z-index: 101;
 }
+
+#hud {
+  border: 1px solid red;
+  z-index: 500;
+  position: fixed;
+  top: 30px;
+  left: 30px;
+}
