@@ -126,10 +126,12 @@ body  {
   z-index: 101;
 }
 
-#hud {
-  border: 1px solid red;
-  z-index: 500;
+.inset-navigation {
   position: fixed;
-  top: 30px;
   left: 30px;
+  top: 30px;
+  width: 600px;
+  height: 400px;
+  border: 1px solid blue;
+  overflow: hidden;
 }

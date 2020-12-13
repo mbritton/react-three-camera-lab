@@ -5,6 +5,8 @@ import * as THREE from 'three';
 import { Vector3 } from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
+let renderer;
+
 const useStore = create((set, get) => ({
     controls: null,
     targetVector: new Vector3(0, 0, 15),
@@ -156,6 +158,49 @@ function RotateButton(ce) {
     );
 }
 
+function InsetNavigation() {
+
+    const geometries = [
+        new THREE.BoxBufferGeometry(1, 1, 1),
+        new THREE.SphereBufferGeometry(0.5, 12, 8),
+        new THREE.DodecahedronBufferGeometry(0.5),
+        new THREE.CylinderBufferGeometry(0.5, 0.5, 1, 12)
+    ];
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(50, 1, 1, 10);
+    camera.position.z = 2;
+    scene.userData.camera = camera;
+
+    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    const geometry = geometries[0];
+    const box = new THREE.Mesh( geometry, material );
+    scene.add(box);
+
+    scene.add(new THREE.Mesh(geometries[ 0 ], material));
+
+    let myCanvas = document.createElement('canvas');
+
+
+
+    const renderer = new THREE.WebGLRenderer({canvas: myCanvas});
+    renderer.setSize(600,400);
+    renderer.render( scene, camera );
+
+    setTimeout(() => {
+        let body = document.getElementById("insetNavigation");
+        body.appendChild(myCanvas);
+    }, 500)
+
+    return (
+        <div id="insetNavigation" className="inset-navigation">
+
+        </div>
+    );
+}
+
+
 function Experiment04() {
 
     init();
@@ -171,6 +216,8 @@ function Experiment04() {
             </Canvas>
             <Menu/>
             <RotateButton/>
+            <InsetNavigation/>
+            <canvas id="myCanvas"></canvas>
         </div>
     );
 }
