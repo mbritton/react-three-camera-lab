@@ -2,14 +2,11 @@ import React, { useRef } from 'react';
 import { Canvas, useFrame, useThree } from 'react-three-fiber';
 import create from 'zustand';
 import * as THREE from 'three';
-import { Vector3 } from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-
-let renderer;
 
 const useStore = create((set, get) => ({
     controls: null,
-    targetVector: new Vector3(0, 0, 15),
+    targetVector: new THREE.Vector3(0, 0, 15),
     selectedQuaternion: new THREE.Quaternion(0, 0, 0, .5),
     homeQuaternion: new THREE.Quaternion(0, 0, 0, .5),
     selectedObject: null,
@@ -158,7 +155,19 @@ function RotateButton(ce) {
     );
 }
 
+/**
+ * Not using fiber - for inset functionality.
+ * @returns {null}
+ * @constructor
+ */
 function InsetNavigation() {
+    let myCanvas;
+    let material;
+    let geometry;
+    let box;
+    let camera;
+    let renderer;
+    let myControls;
 
     const geometries = [
         new THREE.BoxBufferGeometry(1, 1, 1),
@@ -167,39 +176,64 @@ function InsetNavigation() {
         new THREE.CylinderBufferGeometry(0.5, 0.5, 1, 12)
     ];
 
-    const scene = new THREE.Scene();
+    const init = () => {
+        myCanvas = document.getElementById("insetNavigation");
 
-    const camera = new THREE.PerspectiveCamera(50, 1, 1, 10);
-    camera.position.z = 2;
-    scene.userData.camera = camera;
+        material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+        geometry = geometries[ 2 ];
+        box = new THREE.Mesh(geometry, material);
+        box.position.set(0, 0, 3);
 
-    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    const geometry = geometries[0];
-    const box = new THREE.Mesh( geometry, material );
-    scene.add(box);
+        scene.add(box);
 
-    scene.add(new THREE.Mesh(geometries[ 0 ], material));
+        camera = new THREE.PerspectiveCamera(50, 1, 1);
+        camera.position.set(0,0,5);
 
-    let myCanvas = document.createElement('canvas');
+        scene.userData.camera = camera;
 
+        renderer = new THREE.WebGLRenderer({ canvas: myCanvas, antialias: true });
+        renderer.setSize(600, 400);
 
+        setTimeout(() => {
+            myControls = new OrbitControls(camera, renderer.domElement);
+            myControls.enable = true;
+            // myControls.enableRotate = true;
+            // myControls.enablePan = true;
+            // myControls.enableZoom = true;
+            // myControls.enableDamping = false;
+            // myControls.enableKeys = true;
+            scene.userData.controls = myControls;
+            myControls.target = new THREE.Vector3().copy(box.position);
 
-    const renderer = new THREE.WebGLRenderer({canvas: myCanvas});
-    renderer.setSize(600,400);
-    renderer.render( scene, camera );
+            animate();
+        }, 0);
+    }
+    
+    const animate = () => {
+        requestAnimationFrame( animate );
+        render();
+    }
+    
+    const render = () => {
+        renderer.render( scene, camera );
+    }
+
+    let scene = new THREE.Scene();
+
+    let light = new THREE.DirectionalLight(0xffffff, 0.5);
+    light.position.set(1, 3, 1);
+    scene.add(light);
 
     setTimeout(() => {
-        let body = document.getElementById("insetNavigation");
-        body.appendChild(myCanvas);
-    }, 500)
+        init();
+    }, 0);
 
     return (
-        <div id="insetNavigation" className="inset-navigation">
+        <canvas id="insetNavigation">
 
-        </div>
+        </canvas>
     );
 }
-
 
 function Experiment04() {
 
@@ -207,6 +241,9 @@ function Experiment04() {
 
     return (
         <div className="App">
+            <div className="insetNavigationWrapper">
+                <InsetNavigation/>
+            </div>
             <Canvas id="scene-container" camera={ { position: [0, 0, 12] } }>
                 <Orbiter/>
                 <CameraZoomer/>
@@ -214,10 +251,12 @@ function Experiment04() {
                 <pointLight position={ [0, 3, - 2.39] }/>
                 <Group/>
             </Canvas>
+
+
             <Menu/>
             <RotateButton/>
-            <InsetNavigation/>
-            <canvas id="myCanvas"></canvas>
+
+
         </div>
     );
 }
