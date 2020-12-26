@@ -25,8 +25,8 @@ Explore an arrangement of randomly positioned and rotated screens. Grouping and 
 #### Experiment 4 - Video and Webcam Fun
 Webcam in a scene, on a Panel.
 
-#### Experiment 5 - HUD and Multiple Scenes (In Progress)
-Multiple scenes on screen, intercommunication...
+#### Experiment 5 - Zoom to full screen color
+Good way to transition between 3D nav and a traditional screen.
 
 ## General
 

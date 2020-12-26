@@ -68,7 +68,7 @@ function Experiment01() {
     const onScreenClickHandler = (e) => {
         useStore.setState({ targetVector: new THREE.Vector3().copy(e.object.position),
             selectedQuaternion: e.object.quaternion,
-            selectedObject: e.object});
+            selectedObject: e.object });
     }
 
     return(

@@ -50,14 +50,26 @@ body  {
   height: 62px;
 }
 
-.rotate-button {
+.index-menu ul {
+  list-style-type: none;
+}
+
+.index-menu {
   position: fixed;
-  bottom: 130px;
-  width: 75px;
-  height: 75px;
-  right: 22px;
-  font-size: 13px;
-  z-index: 102;
+  right: 0;
+  top: 0;
+  width: 200px;
+  z-index: 101;
+}
+
+.insetNavigationWrapper {
+  position: fixed;
+  left: 30px;
+  top: 30px;
+  width: 600px;
+  height: 400px;
+  border: 1px solid black;
+  z-index: 1200;
 }
 
 .menu {
@@ -114,29 +126,12 @@ body  {
   justify-content: space-evenly;
 }
 
-.index-menu ul {
-  list-style-type: none;
-}
-
-.index-menu {
+.rotate-button {
   position: fixed;
-  right: 0;
-  top: 0;
-  width: 200px;
-  z-index: 101;
-}
-
-.insetNavigationWrapper {
-  position: fixed;
-  left: 30px;
-  top: 30px;
-  width: 600px;
-  height: 400px;
-  border: 2px solid blue;
-  z-index: 1200;
-}
-
-canvas {
-
-  background: beige;
+  bottom: 130px;
+  width: 75px;
+  height: 75px;
+  right: 22px;
+  font-size: 13px;
+  z-index: 102;
 }

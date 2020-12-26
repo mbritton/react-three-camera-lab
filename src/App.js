@@ -6,6 +6,7 @@ import Experiment01 from "./experiments/Experiment01";
 import Experiment02 from "./experiments/Experiment02";
 import Experiment03 from "./experiments/Experiment03";
 import Experiment04 from "./experiments/Experiment04";
+import Experiment05 from "./experiments/Experiment05";
 
 function App() {
     return (
@@ -31,6 +32,9 @@ function App() {
                         <li>
                             <Link to="/04">Experiment 04</Link>
                         </li>
+                        <li>
+                            <Link to="/05">Experiment 05</Link>
+                        </li>
                     </ul>
                 </div>
                 <Switch>
@@ -39,6 +43,7 @@ function App() {
                     <Route exact path="/02" component={ Experiment02 }/>
                     <Route exact path="/03" component={ Experiment03 }/>
                     <Route exact path="/04" component={ Experiment04 }/>
+                    <Route exact path="/05" component={ Experiment05 }/>
                 </Switch>
             </div>
         </Router>

@@ -3,6 +3,9 @@ import { Canvas, useFrame, useThree } from 'react-three-fiber';
 import create from 'zustand';
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
+import { LoadingManager } from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 const useStore = create((set, get) => ({
     controls: null,
@@ -155,6 +158,8 @@ function RotateButton(ce) {
     );
 }
 
+
+
 /**
  * Not using fiber - for inset functionality.
  * @returns {null}
@@ -168,6 +173,7 @@ function InsetNavigation() {
     let camera;
     let renderer;
     let myControls;
+    let myColladaImport;
 
     const geometries = [
         new THREE.BoxBufferGeometry(1, 1, 1),
@@ -176,11 +182,16 @@ function InsetNavigation() {
         new THREE.CylinderBufferGeometry(0.5, 0.5, 1, 12)
     ];
 
+    const scene = new THREE.Scene();
+    const light = new THREE.DirectionalLight(0xffffff, 0.5);
+    light.position.set(1, 3, 1);
+    scene.add(light);
+
     const init = () => {
         myCanvas = document.getElementById("insetNavigation");
 
         material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-        geometry = geometries[ 2 ];
+        geometry = geometries[ 1 ];
         box = new THREE.Mesh(geometry, material);
         box.position.set(0, 0, 3);
 
@@ -191,7 +202,8 @@ function InsetNavigation() {
 
         scene.userData.camera = camera;
 
-        renderer = new THREE.WebGLRenderer({ canvas: myCanvas, antialias: true });
+        renderer = new THREE.WebGLRenderer({ canvas: myCanvas, antialias: true, alpha: true });
+        renderer.setClearColor( 0x000000, 0);
         renderer.setSize(600, 400);
 
         setTimeout(() => {
@@ -203,7 +215,29 @@ function InsetNavigation() {
             // myControls.enableDamping = false;
             // myControls.enableKeys = true;
             scene.userData.controls = myControls;
+
             myControls.target = new THREE.Vector3().copy(box.position);
+
+            const manager = new LoadingManager(() => {
+                scene.add(myColladaImport);
+            });
+
+            // Import model
+            const myLoader = new GLTFLoader(manager);
+            myLoader.load("3d/experiment.gltf", (coll) => {
+                console.log('load complete!  coll: ', coll);
+                myColladaImport = coll.scene;
+
+                // myColladaImport.traverse( function ( node ) {
+                //     if ( node.isSkinnedMesh ) {
+                //         node.frustumCulled = false;
+                //     }
+                // } );
+            }, (progressEvent) => {
+                console.log('PROGRESS', progressEvent);
+            }, (errorEvent) => {
+                console.log('ERROR', errorEvent);
+            });
 
             animate();
         }, 0);
@@ -218,20 +252,12 @@ function InsetNavigation() {
         renderer.render( scene, camera );
     }
 
-    let scene = new THREE.Scene();
-
-    let light = new THREE.DirectionalLight(0xffffff, 0.5);
-    light.position.set(1, 3, 1);
-    scene.add(light);
-
     setTimeout(() => {
         init();
     }, 0);
 
     return (
-        <canvas id="insetNavigation">
-
-        </canvas>
+        <canvas id="insetNavigation"></canvas>
     );
 }
 
@@ -251,8 +277,6 @@ function Experiment04() {
                 <pointLight position={ [0, 3, - 2.39] }/>
                 <Group/>
             </Canvas>
-
-
             <Menu/>
             <RotateButton/>
 
