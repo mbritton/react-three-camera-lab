@@ -3,10 +3,10 @@ import { Canvas, useThree } from 'react-three-fiber';
 import { useSpring } from 'react-spring';
 
 import create from 'zustand';
-import * as THREE from 'three';
-import { log, TextureLoader } from 'three';
+import { Mesh, TextureLoader } from 'three';
 import myImage from '../resources/images/up.png';
-import sphereTexture from '../resources/images/01_10Pattern06.jpg';
+import sphereTexture from "../resources/images/01_10Pattern06.jpg";
+import * as THREE from "three";
 
 let myTexture = null;
 
@@ -18,6 +18,7 @@ const BEHIND = 'b'
 const FORWARD = 'f';
 
 const useStore = create((set, get) => ({
+    backgroundColor: 0xbe763a,
     componentJustMounted: true,
     currentDollyPosition: 0,
     currentTilt: 0,
@@ -31,27 +32,33 @@ const useStore = create((set, get) => ({
         {
             key: 1,
             label: 'Left',
-            direction: LEFT
+            direction: LEFT,
+            color: 0xcecece
         }, {
             key: 2,
             label: 'Up',
-            direction: ABOVE
+            direction: ABOVE,
+            color: 0x81be3a
         }, {
             key: 3,
             label: 'Main',
-            direction: FORWARD
+            direction: FORWARD,
+            color: 0xff0000
         }, {
             key: 4,
             label: 'Behind',
-            direction: BEHIND
+            direction: BEHIND,
+            color: 0xffff00
         }, {
             key: 5,
             label: 'Down',
-            direction: UNDERNEATH
+            direction: UNDERNEATH,
+            color: 0x6f6f6f
         }, {
             key: 6,
             label: 'Right',
-            direction: RIGHT
+            direction: RIGHT,
+            color: 0x2a2a2a
         }
     ],
     positionsConfig: [
@@ -77,6 +84,7 @@ const useStore = create((set, get) => ({
             position: 20
         }
     ],
+    backgroundDomePosition: null,
     getCurrentAxis: ({ x, y, z }) => {
         let curAxis = 0;
         if (x) {
@@ -96,8 +104,22 @@ const useStore = create((set, get) => ({
             }
         })
         return homePos;
+    },
+    getColor: (p) => {
+        get().directionsConfig.forEach((itm) => {
+            if (itm.key == p.key) {
+                return itm.color;
+            }
+        })
     }
 }));
+
+const loader = new TextureLoader();
+let tLoad = loader.load(sphereTexture, (texture) => {
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.offset.set( 0, 0 );
+    texture.repeat.set( 6, 6 );
+});
 
 function CameraDolly() {
     const { camera } = useThree();
@@ -145,8 +167,6 @@ function CameraSwivel() {
     fromObj[ cv ] = 0;
     toObj[ cv ] = useStore(state => state.currentSwivel);
 
-    // TODO: Try useFrame here and consolidate this duplication.
-
     useSpring({
         from: useStore(state => state.currentDollyPosition),
         to: 0,
@@ -170,7 +190,6 @@ function Navigation() {
     const currentDirection = useStore(state => state.currentDirection);
     const directionsConfig = useStore(state => state.directionsConfig);
     const positions = useStore(state => state.positionsConfig);
-    let componentJustMounted = true;
 
     function swivelCamera(sNo) {
         // Set vectors
@@ -206,8 +225,7 @@ function Navigation() {
     }
 
     function goToMain(p) {
-
-        // TODO:
+        useStore.setState({ backgroundColor: p.color });
         setTimeout(() => {
             useStore.setState({ currentDollyPosition: 0 });
             setHighlight(p);
@@ -225,6 +243,7 @@ function Navigation() {
     }
 
     function chooseDirection(p) {
+
         switch (p.direction) {
             case LEFT:
                 swivelCamera(1.6);
@@ -307,24 +326,6 @@ function Navigation() {
     );
 }
 
-function BackgroundDome() {
-    const { mesh } = useRef();
-    const loader = new TextureLoader();
-
-    let tLoad = loader.load(sphereTexture, (texture) => {
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.offset.set( 0, 0 );
-        texture.repeat.set( 6, 6 );
-    });
-
-    return (
-        <mesh visible position={ [0, 0, - 2] } rotation={ [0, 0, 0] }>
-            <sphereBufferGeometry args={ [24, 24, 24] }/>
-            <meshStandardMaterial map={tLoad} name="material" color="grey" side={ THREE.BackSide }/>
-        </mesh>
-    );
-}
-
 function ScreenBox(props) {
     const mesh = useRef();
     const loader = new TextureLoader();
@@ -371,7 +372,30 @@ const setHighlight = (interaction) => {
     }
 }
 
-function Experiment00() {
+function BackgroundDome() {
+    const { scene } = useThree();
+    const cv = useStore(state => state.currentSwivelAxis);
+
+    let fromObj = {}, toObj = {};
+    fromObj[ cv ] = 0;
+    toObj[ cv ] = useStore(state => state.currentSwivel);
+
+    let myDome = scene.getObjectByName('dome') !== undefined ? scene.getObjectByName('dome') : new Mesh();
+
+    useSpring({
+        from: fromObj,
+        to: toObj,
+        onFrame: ({ x, y, z }) => {
+            myDome.rotation[ useStore.getState().currentSwivelAxis ] = .8 * useStore.getState().getCurrentAxis({ x, y, z });
+        }
+    });
+
+    return (
+        null
+    );
+}
+
+function Experiment06() {
     if (useStore.getState().componentJustMounted === false) {
         setTimeout(()  => {
             setHighlight({key: 3, label: "Main", direction: "f"});
@@ -420,17 +444,23 @@ function Experiment00() {
                 <ScreenBox position={ [0, 0, 17] }/>
                 <ScreenBox position={ [0, 0, 22] }/>
 
-                {/* Camera hooks */ }
+                {/* Camera components */ }
                 <CameraDolly/>
                 <CameraTilt/>
                 <CameraSwivel/>
 
-                {/*Background / environment*/ }
-                <BackgroundDome/>
+
+                <mesh name='dome' visible position={ [0, 0, - 2] } rotation={ [0, 0, 0] }>
+                    <sphereBufferGeometry args={ [24, 24, 24] }/>
+                    <meshStandardMaterial map={tLoad} name="material" color="grey" side={ THREE.BackSide }/>
+                </mesh>
+
+                {/*Background / environment */ }
+                <BackgroundDome />
             </Canvas>
             <Navigation/>
         </div>
     );
 }
 
-export default Experiment00;
+export default Experiment06;
