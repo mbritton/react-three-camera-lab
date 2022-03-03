@@ -329,6 +329,36 @@ function ScreenBox(props) {
     );
 }
 
+const setHighlight = (interaction) => {
+    let hasPosition = (interaction.position !== undefined) ? true : false;
+    let hasDirection = (interaction.direction !== undefined) ? true : false;
+    let homePosition = useStore.getState().getHomePosition();
+
+    if (hasDirection === true) {
+        document.querySelectorAll('.menu.positions-menu a').forEach((itm) => {
+            itm.classList.remove('selected');
+            if (itm.id == homePosition.key) {
+                itm.classList.add('selected');
+            }
+        });
+        document.querySelectorAll('.menu.directions-menu a').forEach((itm) => {
+            itm.classList.remove('selected');
+            if (itm.id == interaction.key) {
+                itm.classList.add('selected');
+            }
+        });
+    }
+
+    if (hasPosition === true) {
+        document.querySelectorAll('.menu.positions-menu a').forEach((itm) => {
+            itm.classList.remove('selected');
+            if (itm.id == interaction.key) {
+                itm.classList.add('selected');
+            }
+        });
+    }
+}
+
 function MikeBrittonDotCom() {
     if (useStore.getState().componentJustMounted === false) {
         setTimeout(()  => {
