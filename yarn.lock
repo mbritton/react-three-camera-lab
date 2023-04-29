@@ -7461,6 +7461,11 @@ raf@^3.4.1:
   dependencies:
     performance-now "^2.1.0"
 
+rallax.js@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/rallax.js/-/rallax.js-2.0.4.tgz#4b393d858a124770fe2703cd1566ebc7f75cbd25"
+  integrity sha512-E0WiHrWrnoX4RU79xWP4SvTmgrrXIU3lILwFv7rkrt8r6sDtq+ZMELiLlgDsvY7GW/Ut78bsUIzP0JWDhMBzog==
+
 randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/randombytes/-/randombytes-2.1.0.tgz#df6f84372f0270dc65cdf6291349ab7a473d4f2a"
@@ -9620,6 +9625,7 @@ yargs@^13.3.0:
     y18n "^4.0.0"
     yargs-parser "^13.1.2"
 
-zustand@^3.2.0:
+zustand@3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/zustand/-/zustand-3.2.0.tgz#a718a964440796d44edda3073b69e78b95f4c8f5"
+  integrity sha512-MBYFrnUdgFVi38tdQNSzVN9cPpRDf7w2HhdHGDSgBRHN7vIbUGUR3aBdVQykelXzSFR7iVj3YNBuq7B9ceMI5w==

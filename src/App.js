@@ -8,6 +8,7 @@ import Experiment03 from "./experiments/Experiment03";
 import Experiment04 from "./experiments/Experiment04";
 import Experiment05 from "./experiments/Experiment05";
 import Experiment06 from "./experiments/Experiment06";
+import BlogPOC from './experiments/BlogPOC';
 import MikeBrittonDotCom from "./experiments/MikeBrittonDotCom";
 import TwoDExperiment00 from "./experiments/TwoDExperiment00";
 
@@ -44,6 +45,9 @@ function App() {
                         <li>
                             <Link to="/08">MikeBrittonDotCom</Link>
                         </li>
+                        <li>
+                            <Link to="/09">BlogPOC</Link>
+                        </li>
                     </ul>
                     <ul>
                         <li>
@@ -61,6 +65,7 @@ function App() {
                     <Route exact path="/06" component={ Experiment06 }/>
                     <Route exact path="/07" component={ TwoDExperiment00 }/>
                     <Route exact path="/08" component={ MikeBrittonDotCom }/>
+                    <Route exact path="/09" component={ BlogPOC }/>
                 </Switch>
             </div>
         </Router>
