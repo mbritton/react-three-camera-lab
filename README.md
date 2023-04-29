@@ -2,13 +2,13 @@
 # React / Three.js Camera Lab
 
 
-3D navigation explored as structures accessed via programmatic first-person camera movements. 
+A sketchbookk for ideas that'll be used in real projects. Concepts in 3D navigation explored as structures accessed via programmatic camera movements. 
 
 These experiments (ab)use [Zustand](https://github.com/pmndrs/zustand) for state management, [react-spring](https://www.react-spring.io/) for animation, [react-three-fiber](https://github.com/pmndrs/react-three-fiber) for 3D (integrates [Three.js](https://threejs.org/))
 
 
 
-Mike Britton 2022
+Mike Britton 2023
 
 #### Experiment 1 - Basic Structured Movement
 ![](experiment-00.png?raw=true) 
